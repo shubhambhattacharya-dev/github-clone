@@ -1,3 +1,4 @@
+import { Route } from "react-router-dom"
 
 
 
@@ -5,11 +6,23 @@ function App() {
 
 
   return (
-    <divs className="bg-gray-900 text-white">
+    <div className="flex">
+      <sidebar>
+        <div>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/likes" element={<LikesPage />} />
+
+
+          </Routes>
+        </div>
+      </sidebar>
+
      
-        hello world
-        
-    </divs>
+    </div>
   )
 }
 
