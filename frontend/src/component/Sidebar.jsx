@@ -1,9 +1,13 @@
-import React from 'react'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { IoHomeSharp, IoMedalOutline } from "react-icons/io5"; // Corrected import
+import { FaHeart } from "react-icons/fa";
 
 const Sidebar = () => {
+  const authUser = true;
   return (
     <aside className="group flex flex-col items-center min-w-12 sm:w-16 sticky top-0 left-0 h-screen py-8 overflow-y-auto
-    bg-gradient-to-b from-gray-800/40 to-gray-900/30 backdrop-blur-2xl
+    bg-gradient-to-b from-gray-800 to-gray-900 backdrop-blur-2xl // Removed transparency
     transition-all duration-500 ease-in-out
     border-r-2 border-white/15 hover:border-indigo-400/80 rounded-r-xl
     text-gray-100 hover:text-white/90 
@@ -17,9 +21,26 @@ const Sidebar = () => {
     hover:after:opacity-60
     [&>*]:transition-transform [&>*]:duration-300 [&>*]:hover:scale-110
     [&>*]:hover:text-indigo-300 [&>*]:active:scale-95">
-      hello
-      </aside>
-  )
+      <nav className='h-full flex flex-col gap-3'>
+        <Link to='/' className='flex justify-center'>
+          <img className='h-8' src="/github.svg" alt="Github Logo" />
+        </Link>
+        <Link to='/' className='p-1.5 flex justify-center transition-colors duration-200 rounded-lg hover:bg-gray-800'>
+          <IoHomeSharp size={22} />
+        </Link>
+        {authUser && (
+          <Link to='/likes' className='p-1.5 flex justify-center transition-colors duration-200 rounded-lg hover:bg-gray-800'>
+            <FaHeart size={22} />
+          </Link>
+        )}
+        {authUser && (
+          <Link to='/explore' className='p-1.5 flex justify-center transition-colors duration-200 rounded-lg hover:bg-gray-800'>
+            <IoMedalOutline size={22} /> {/* Replaced image with icon */}
+          </Link>
+        )}
+      </nav>
+    </aside>
+  );
 }
 
-export default Sidebar
+export default Sidebar;
