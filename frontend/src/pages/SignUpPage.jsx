@@ -13,8 +13,8 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      <div className="w-full max-w-md bg-gray-800/40 backdrop-blur-2xl border-2 border-white/15 rounded-xl shadow-[0_0_35px_-5px_rgba(59,130,246,0.3)] hover:shadow-[0_0_45px_-5px_rgba(59,130,246,0.4)] transition-all duration-300">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-glass">
+      <div className="w-full max-w-md rounded-xl transition-all duration-300">
         <div className="p-8 space-y-6">
           {/* GitHub Logo */}
           <div className="flex justify-center">
@@ -22,7 +22,7 @@ const SignUpPage = () => {
               height="32"
               viewBox="0 0 16 16"
               width="32"
-              className="text-gray-100 hover:text-white transition-colors"
+              className="text-white-800  transition-colors"
               aria-hidden="true"
             >
               <path
@@ -33,21 +33,21 @@ const SignUpPage = () => {
             </svg>
           </div>
 
-          <h2 className="text-2xl font-bold text-center text-gray-100 hover:text-white transition-colors">
+          <h2 className="text-2xl font-bold text-center text-cream-800  transition-colors">
             Sign up for GitHub
           </h2>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             {/* Username Field */}
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-300">
+              <label className="block text-sm font-medium mb-2 text-gray-600">
                 Username
               </label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg bg-gray-700/30 backdrop-blur-sm border border-white/15 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 placeholder-gray-400 text-gray-100 transition-all"
+                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 placeholder-gray-400 text-gray-800 transition-all"
                 placeholder="Enter your username"
                 required
               />
@@ -55,14 +55,14 @@ const SignUpPage = () => {
 
             {/* Email Field */}
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-300">
+              <label className="block text-sm font-medium mb-2 text-gray-600">
                 Email address
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg bg-gray-700/30 backdrop-blur-sm border border-white/15 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 placeholder-gray-400 text-gray-100 transition-all"
+                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 placeholder-gray-400 text-gray-800 transition-all"
                 placeholder="you@example.com"
                 required
               />
@@ -70,18 +70,18 @@ const SignUpPage = () => {
 
             {/* Password Field */}
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-300">
+              <label className="block text-sm font-medium mb-2 text-gray-600">
                 Password
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg bg-gray-700/30 backdrop-blur-sm border border-white/15 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 placeholder-gray-400 text-gray-100 transition-all"
+                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 placeholder-gray-400 text-gray-800 transition-all"
                 placeholder="Create a password"
                 required
               />
-              <p className="mt-3 text-sm text-gray-400 leading-relaxed">
+              <p className="mt-3 text-sm text-gray-500 leading-relaxed">
                 Make sure it's at least 15 characters OR at least 8 characters
                 including a number and a lowercase letter.
               </p>
@@ -90,21 +90,21 @@ const SignUpPage = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3 px-4 bg-green-600/90 hover:bg-green-700/90 text-white rounded-lg transition-all backdrop-blur-sm border border-green-400/30 shadow-md hover:shadow-lg hover:border-green-400/50 font-medium"
+              className="w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all font-medium"
             >
               Create account
             </button>
           </form>
 
           {/* Legal Text */}
-          <div className="mt-6 text-center text-sm text-gray-400">
+          <div className="mt-6 text-center text-sm text-gray-500">
             <p>
               By creating an account, you agree to the{' '}
-              <Link to="/terms" className="text-blue-400 hover:text-blue-300 underline transition-colors">
+              <Link to="/terms" className="text-blue-600 hover:text-blue-500 underline transition-colors">
                 Terms of Service
               </Link>
               . For more information about GitHub's privacy practices, see the{' '}
-              <Link to="/privacy" className="text-blue-400 hover:text-blue-300 underline transition-colors">
+              <Link to="/privacy" className="text-blue-600 hover:text-blue-500 underline transition-colors">
                 Privacy Statement
               </Link>
               .
@@ -112,9 +112,9 @@ const SignUpPage = () => {
           </div>
 
           {/* Sign In Link */}
-          <div className="mt-6 text-center text-sm text-gray-400 p-4 bg-gray-800/20 backdrop-blur-sm rounded-lg">
+          <div className="mt-6 text-center text-sm text-gray-500 p-4 rounded-lg">
             Already have an account?{' '}
-            <Link to="/login" className="text-blue-400 hover:text-blue-300 font-semibold underline transition-colors">
+            <Link to="/login" className="text-blue-600 hover:text-blue-500 font-semibold underline transition-colors">
               Sign in instead
             </Link>
           </div>
