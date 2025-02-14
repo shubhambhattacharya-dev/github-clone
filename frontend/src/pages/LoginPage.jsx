@@ -9,7 +9,7 @@ const LoginPage = () => {
           <div className='flex flex-col items-center gap-4'>
             <FaGithub className='w-12 h-12 text-gray-800' />
             <h1 className='text-2xl font-bold text-gray-900 text-center'>
-              Sign in to GitHub
+              Login in to GitHub
             </h1>
           </div>
 
@@ -21,7 +21,7 @@ const LoginPage = () => {
               text-center inline-flex items-center justify-center gap-3'
             >
               <FaGithub className='w-5 h-5' />
-              Sign in with Github
+              Login in with Github
             </button>
 
             <div className='text-sm text-center text-gray-500 border-t border-gray-200 pt-6'>

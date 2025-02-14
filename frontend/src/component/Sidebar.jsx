@@ -7,7 +7,7 @@ import Logout from './Logout';
 import { PiSignInBold } from "react-icons/pi";
 import { MdEditDocument } from 'react-icons/md';
 
-const Sidebar = ({ authUser = false }) => {  // Accept authUser as prop for better control
+const Sidebar = ({ authUser = true }) => {  // Accept authUser as prop for better control
   // Navigation items configuration
   const navItems = [
     { 
@@ -50,7 +50,7 @@ const Sidebar = ({ authUser = false }) => {  // Accept authUser as prop for bett
       border-r-2 border-white/15 hover:border-indigo-400/80 rounded-r-xl
       text-gray-100 hover:text-white/90 
       shadow-[0_0_25px_-10px_rgba(59,130,246,0.3)] hover:shadow-[0_0_35px_-5px_rgba(59,130,246,0.4)]
-      relative overflow-hidden
+       overflow-hidden
       after:absolute after:top-0 after:left-0 after:w-[2px] after:h-full after:bg-gradient-to-b after:from-indigo-400 after:via-purple-400 after:to-transparent
       after:opacity-0
       hover:after:opacity-60"
@@ -93,7 +93,7 @@ const Sidebar = ({ authUser = false }) => {  // Accept authUser as prop for bett
 
         {authUser && (
           <div className='flex flex-col mt-auto gap-2'>
-            <Logout 
+            <Logout
               className="focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:rounded-lg"
               aria-label="Logout"
             />
