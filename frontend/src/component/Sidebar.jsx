@@ -7,7 +7,7 @@ import Logout from './Logout';
 import { PiSignInBold } from "react-icons/pi";
 import { MdEditDocument } from 'react-icons/md';
 
-const Sidebar = ({ authUser = true }) => {  // Accept authUser as prop for better control
+const Sidebar = ({ authUser = false }) => {  // Accept authUser as prop for better control
   // Navigation items configuration
   const navItems = [
     { 
@@ -97,6 +97,8 @@ const Sidebar = ({ authUser = true }) => {  // Accept authUser as prop for bette
               className="focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:rounded-lg"
               aria-label="Logout"
             />
+
+
           </div>
         )}
       </nav>
