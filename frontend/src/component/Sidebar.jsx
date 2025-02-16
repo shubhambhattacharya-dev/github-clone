@@ -53,7 +53,7 @@ const Sidebar = ({ authUser = true }) => {  // Accept authUser as prop for bette
        overflow-hidden
       after:absolute after:top-0 after:left-0 after:w-[2px] after:h-full after:bg-gradient-to-b after:from-indigo-400 after:via-purple-400 after:to-transparent
       after:opacity-0
-      hover:after:opacity-60"
+      hover:after:opacity-60" 
     >
       {/* Skip navigation link for screen readers */}
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:rounded-lg">

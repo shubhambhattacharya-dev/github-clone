@@ -1,9 +1,10 @@
 import { FaCodeBranch, FaCopy, FaRegStar } from "react-icons/fa";
 import { FaCodeFork } from "react-icons/fa6";
+import React from 'react'
 
 const Repo = () => {
-	return (
-		<li className='mb-10 ms-7'>
+  return (
+    <li className='mb-10 ms-7'>
 			<span
 				className='absolute flex items-center justify-center w-6 h-6 bg-blue-100
 			rounded-full -start-3 ring-8 ring-white'
@@ -48,5 +49,8 @@ const Repo = () => {
 			<p className='mb-4 text-base font-normal text-gray-500'>Real Time Chat App | MERN && Socket.io && JWT</p>
 			<img src={"/javascript.svg"} alt='Programming language icon' className='h-8' />
 		</li>
-	);
-};
+
+  )
+}
+
+export default Repo
