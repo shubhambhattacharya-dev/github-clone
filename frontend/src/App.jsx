@@ -2,11 +2,12 @@ import { Route, Routes } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage.jsx";
 import SignUpPage from "./pages/SignUpPage.jsx";
-import HomePage from "./pages/HomePage";
-import ExplorePage from "./pages/ExplorePage";
-import LikesPage from "./pages/LikesPage";
+import HomePage from "./pages/HomePage.jsx";
+import ExplorePage from "./pages/ExplorePage.jsx";
+import LikesPage from "./pages/LikesPage.jsx";
 
-import Sidebar from "./component/Sidebar";
+import Sidebar from "./component/Sidebar.jsx";
+
 
 
 function App() {

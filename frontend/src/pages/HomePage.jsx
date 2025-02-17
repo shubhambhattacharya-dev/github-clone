@@ -1,7 +1,9 @@
-import ProfileInfo from "../component/ProfileInfo";
-import Repos from "../component/Repos";
-import Search from "../component/Search";
-import SortRepos from "../component/SortRepos";
+import ProfileInfo from "../component/ProfileInfo.jsx";
+import Repos from "../component/Repos.jsx";
+import Search from "../component/Search.jsx";
+import SortRepos from "../component/SortRepos.jsx";
+import Spinner from "../component/Spinner.jsx";
+
 
 const HomePage = () => {
     return (
@@ -11,6 +13,8 @@ const HomePage = () => {
             <div className='flex gap-4 flex-col lg:flex-row justify-center items-start overflow-hidden'>
                 <ProfileInfo />
                 <Repos />
+                <Spinner />
+
             </div>
         </div>
     );
