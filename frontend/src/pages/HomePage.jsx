@@ -39,8 +39,9 @@ const HomePage = () => {
       <Search />
       <SortRepos />
       <div className="flex gap-4 flex-col lg:flex-row justify-center items-start overflow-hidden">
-        <ProfileInfo userProfile={userProfile} />
-        <Repos repos={repos} />
+        {userProfile && !loading && <ProfileInfo userProfile={userProfile} />}
+        {repos.length > 0 && !loading && <Repos repos={repos} />}
+       
         {loading && <Spinner />}
       </div>
     </div>
