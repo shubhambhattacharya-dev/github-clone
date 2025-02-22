@@ -66,6 +66,14 @@ const ProfileInfo = ({ userProfile }) => {
           </a>
         ) : null}
 
+           {/* Full Name */}
+           {userProfile?.name && (
+          <div className="my-2">
+            <p className="text-gray-600 font-bold text-sm">Full name</p>
+            <p>{userProfile?.name}</p>
+          </div>
+        )}
+
         {/* Member Since Date */}
         <div className="my-2">
           <p className="text-gray-600 font-bold text-sm">Member since</p>
@@ -80,13 +88,7 @@ const ProfileInfo = ({ userProfile }) => {
           </div>
         )}
 
-        {/* Full Name */}
-        {userProfile?.name && (
-          <div className="my-2">
-            <p className="text-gray-600 font-bold text-sm">Full name</p>
-            <p>{userProfile?.name}</p>
-          </div>
-        )}
+     
 
         {/* Username */}
         <div className="my-2">
