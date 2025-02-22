@@ -8,31 +8,31 @@ const Search = () => {
       </label>
       <div className='relative group'>
         <div className='absolute inset-y-0 start-0 flex items-center z-10 ps-3 pointer-events-none'>
-          <IoSearch className='w-6 h-6 text-gray-500 transition-all duration-300 group-focus-within:scale-110 group-focus-within:text-blue-400' />
+          <IoSearch className='w-6 h-6 text-gray-300 transition-all duration-300 group-focus-within:scale-110 group-focus-within:text-blue-300' />
         </div>
         <input
           type='search'
           id='default-search'
-          className='block w-full p-5 ps-14 text-lg rounded-xl bg-glass border-2 border-blue-400/20 
-          backdrop-blur-xl focus:border-blue-500/40 focus:outline-none 
-          placeholder-gray-500/70 hover:border-blue-400/30 
-          transition-all duration-500 shadow-xl 
-          shadow-blue-900/10 hover:shadow-blue-900/20 focus:shadow-blue-900/30'
+          className='block w-full p-4 ps-12 text-gray-100 text-md rounded-lg bg-glass border border-gray-600/30 
+          backdrop-blur-2xl focus:border-blue-400/40 focus:outline-none 
+          placeholder-gray-400/80 hover:border-gray-500/40 
+          transition-all duration-300 shadow-2xl 
+          shadow-gray-900/20 hover:shadow-gray-900/30 focus:shadow-blue-900/40'
           placeholder='Search username...'
           required
         />
         <button
           type='submit'
-          className='absolute end-3 bottom-3 bg-glass border-2 border-blue-400/30 hover:border-blue-500/40 
+          className='absolute end-2.5 bottom-2 bg-gradient-to-br from-blue-500/80 to-blue-600/90 border border-blue-400/30 hover:border-blue-300/40 
           backdrop-blur-lg focus:outline-none 
-          font-semibold rounded-lg text-sm px-7 py-3.5 text-gray-300 
-          shadow-xl shadow-blue-900/20 hover:shadow-blue-900/30 
+          font-medium rounded-lg text-sm px-5 py-2.5 text-gray-100 
+          shadow-lg shadow-blue-900/30 hover:shadow-blue-900/40 
           hover:scale-[98%] active:scale-95 transition-all 
-          duration-300 flex items-center gap-2 hover:text-blue-400'
+          duration-300 flex items-center gap-1 hover:text-white'
         >
           <span>Search</span>
           <svg 
-            className='w-5 h-5 -mr-1 group-hover:translate-x-1 transition-transform' 
+            className='w-4 h-4 -mr-1 group-hover:translate-x-1 transition-transform' 
             fill="currentColor" 
             viewBox="0 0 20 20"
           >
