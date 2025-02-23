@@ -11,11 +11,11 @@ const HomePage = () => {
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const getUserProfileAndRepos = useCallback(async () => {
+  const getUserProfileAndRepos = useCallback(async (username="shubhambhattacharya-dev") => {
     setLoading(true);
     try {
       const userRes = await fetch(
-        "https://api.github.com/users/shubhambhattacharya-dev"
+        `https://api.github.com/users/${username}`
       );
       const profileData = await userRes.json();
       setUserProfileInfo(profileData);
@@ -33,6 +33,18 @@ const HomePage = () => {
   useEffect(() => {
     getUserProfileAndRepos();
   }, [getUserProfileAndRepos]);
+
+  const onSearch = async (e,username) => {
+    e.preventDefault();
+
+    setLoading(true);
+    setRepos([]);
+    setUserProfileInfo(null);
+
+      await getUserProfileAndRepos(username);
+
+  }
+   
 
   return (
     <div className="m-4">
