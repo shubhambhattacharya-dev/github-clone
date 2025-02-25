@@ -1,9 +1,17 @@
+import React, { useState } from 'react';
 import { IoSearch } from 'react-icons/io5';
 
-const Search = () => {
+const Search = ({ onSearch }) => {
+  const [username, setUsername] = useState('');
   return (
-    <form className='max-w-2xl mx-auto p-2'>
-      <label htmlFor='default-search' className='mb-2 text-sm font-medium text-gray-900 sr-only'>
+    <form
+      className='max-w-2xl mx-auto p-2'
+      onSubmit={(e) => onSearch(e, username)}
+    >
+      <label
+        htmlFor='default-search'
+        className='mb-2 text-sm font-medium text-gray-900 sr-only'
+      >
         Search
       </label>
       <div className='relative group'>
@@ -13,13 +21,15 @@ const Search = () => {
         <input
           type='search'
           id='default-search'
-          className='block w-full p-4 ps-12 text-gray-100 text-md rounded-lg bg-glass border border-gray-600/30 
+          className='block w-full p-4 ps-12 text-black text-md rounded-lg bg-glass border border-gray-600/30 
           backdrop-blur-2xl focus:border-blue-400/40 focus:outline-none 
           placeholder-gray-400/80 hover:border-gray-500/40 
           transition-all duration-300 shadow-2xl 
           shadow-gray-900/20 hover:shadow-gray-900/30 focus:shadow-blue-900/40'
           placeholder='Search username...'
           required
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <button
           type='submit'
@@ -31,12 +41,16 @@ const Search = () => {
           duration-300 flex items-center gap-1 hover:text-white'
         >
           <span>Search</span>
-          <svg 
-            className='w-4 h-4 -mr-1 group-hover:translate-x-1 transition-transform' 
-            fill="currentColor" 
-            viewBox="0 0 20 20"
+          <svg
+            className='w-4 h-4 -mr-1 group-hover:translate-x-1 transition-transform'
+            fill='currentColor'
+            viewBox='0 0 20 20'
           >
-            <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"/>
+            <path
+              fillRule='evenodd'
+              d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z'
+              clipRule='evenodd'
+            />
           </svg>
         </button>
       </div>
