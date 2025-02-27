@@ -29,6 +29,8 @@ const HomePage = () => {
         return { userProfile: profileData, repos: repoData };
       } catch (error) {
         toast.error(error.message);
+        // Return a consistent object to avoid destructuring errors
+        return { userProfile: null, repos: [] };
       } finally {
         setLoading(false);
       }
@@ -47,10 +49,12 @@ const HomePage = () => {
     setRepos([]);
     setUserProfileInfo(null);
 
-    const { userProfile, repos } = await getUserProfileAndRepos(username);
-
-    setUserProfileInfo(userProfile);
-    setRepos(repos);
+    const result = await getUserProfileAndRepos(username);
+    if (result) {
+      const { userProfile, repos } = result;
+      setUserProfileInfo(userProfile);
+      setRepos(repos);
+    }
     setLoading(false);
   };
 
@@ -60,7 +64,8 @@ const HomePage = () => {
       <SortRepos />
       <div className="flex gap-4 flex-col lg:flex-row justify-center items-start overflow-hidden">
         {userProfile && !loading && <ProfileInfo userProfile={userProfile} />}
-        {repos.length > 0 && !loading && <Repos repos={repos} />}
+        {/* Always render Repos so the "No repos found" message can display */}
+        {!loading && <Repos repos={repos} />}
         {loading && <Spinner />}
       </div>
     </div>
