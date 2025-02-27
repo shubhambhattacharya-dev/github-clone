@@ -7,7 +7,7 @@ import Logout from './Logout';
 import { PiSignInBold } from "react-icons/pi";
 import { MdEditDocument } from 'react-icons/md';
 
-const Sidebar = ({ authUser = true }) => {  // Accept authUser as prop for better control
+const Sidebar = ({ authUser = true}) => {  // Accept authUser as prop for better control
   
   const navItems = [
     { 
