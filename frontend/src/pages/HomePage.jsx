@@ -10,8 +10,9 @@ const HomePage = () => {
   const [userProfile, setUserProfileInfo] = useState(null);
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [sortType, setSortType] = useState(""); // Added missing sortType state
-
+  const [sortType, setSortType] = useState("recent"); // Added missing sortType state
+    
+ 
   const getUserProfileAndRepos = useCallback(
     async (username = "shubhambhattacharya-dev") => {
       setLoading(true);
@@ -29,6 +30,7 @@ const HomePage = () => {
 
         const repoRes = await fetch(profileData.repos_url);
         const repoData = await repoRes.json();
+        repos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         setRepos(repoData);
         console.log("userProfile:", profileData);
         console.log("repos:", repoData);
@@ -62,6 +64,7 @@ const HomePage = () => {
       setRepos(repos);
     }
     setLoading(false);
+    setSortType("recent");
   };
 
   const onSort = (sortType) => {
