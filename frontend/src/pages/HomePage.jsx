@@ -17,7 +17,12 @@ const HomePage = () => {
       setLoading(true);
       try {
         const userRes = await fetch(
-          `https://api.github.com/users/${username}`
+          `https://api.github.com/users/${username}`,{
+            headers: {
+              Authorization: `token ${import.meta.env.VITE_GITHUB_API_KEY} `,
+            },
+
+          }
         );
         const profileData = await userRes.json();
         setUserProfileInfo(profileData);
