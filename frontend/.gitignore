@@ -11,8 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# Ignore all .env files
 .env
- 
+.env.*
+
 
 
 # Editor directories and files
@@ -26,3 +29,4 @@ dist-ssr
 *.sln
 *.sw?.env
 
+frontend/.env
