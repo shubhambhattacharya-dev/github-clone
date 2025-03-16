@@ -1,6 +1,11 @@
 import express from 'express';
+import userRouter from './routes/user.route.js';
+import dotenv from 'dotenv';
 
 const app = express();
+
+
+dotenv.config();
 
 app.get('/', (req, res) => {
     res.send('server is ready');
