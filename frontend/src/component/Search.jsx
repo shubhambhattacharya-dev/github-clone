@@ -3,11 +3,16 @@ import { IoSearch } from 'react-icons/io5';
 
 const Search = ({ onSearch }) => {
   const [username, setUsername] = useState('');
+  const [isSearching, setIsSearching] = useState(false); // Track search state
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSearch(e, username);
+    setIsSearching(false); // Change text color to black after search
+  };
+
   return (
-    <form
-      className='max-w-2xl mx-auto p-2'
-      onSubmit={(e) => onSearch(e, username)}
-    >
+    <form className='max-w-2xl mx-auto p-2' onSubmit={handleSubmit}>
       <label
         htmlFor='default-search'
         className='mb-2 text-sm font-medium text-gray-900 sr-only'
@@ -21,19 +26,22 @@ const Search = ({ onSearch }) => {
         <input
           type='search'
           id='default-search'
-          className='block w-full p-4 ps-12 text-black text-md rounded-lg bg-glass border border-gray-600/30 
+          className={`block w-full p-4 ps-12 text-md rounded-lg bg-glass border border-gray-600/30 
           backdrop-blur-2xl focus:border-blue-400/40 focus:outline-none 
-          placeholder-gray-400/80 hover:border-gray-500/40 
-          transition-all duration-300 shadow-2xl 
-          shadow-gray-900/20 hover:shadow-gray-900/30 focus:shadow-blue-900/40'
+          placeholder-gray-400/80 transition-all duration-300 shadow-2xl 
+          shadow-gray-900/20 focus:shadow-blue-900/40
+          ${isSearching ? 'text-white' : 'text-black'}`} // Dynamic text color
           placeholder='Search username...'
           required
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) => {
+            setUsername(e.target.value);
+            setIsSearching(true); // Change text to white while typing
+          }}
         />
         <button
           type='submit'
-          className='absolute end-2.5 bottom-2 bg-gradient-to-br from-blue-500/80 to-blue-600/90 border border-blue-400/30 hover:border-blue-300/40 
+          className='absolute end-2.5 bottom-2 bg-gradient-to-br from-blue-500/80 to-blue-600/90 border border-blue-400/30 
           backdrop-blur-lg focus:outline-none 
           font-medium rounded-lg text-sm px-5 py-2.5 text-gray-100 
           shadow-lg shadow-blue-900/30 hover:shadow-blue-900/40 

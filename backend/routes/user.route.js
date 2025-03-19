@@ -3,6 +3,9 @@ import { getUserProfileAndRepos } from '../controllers/user.controller.js';
 
 const router = express.Router();
 
-router.get('/profile/:username', getUserProfileAndRepos);
+router.get("/profile/:username", getUserProfileAndRepos);
 
-export default router; // Export router
+
+
+
+export default router;

@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "description": "A **GitHub-inspired** full-stack web application built using **MongoDB, Express.js, React, and Node.js (MERN Stack)**. This project replicates essential GitHub functionalities like repositories, authentication, commits, and more!",
   "main": "server.js",
-  
   "scripts": {
-   "dev":"nodemon  backend/server.js"
-    
+    "dev": "nodemon  backend/server.js"
   },
-  "type":"module",
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
