@@ -2,6 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import Spinner from "../component/Spinner";
 import Repos from "../component/Repos";
+
 const ExplorePage = () => {
 	// https://api.github.com/search/repositories?q=language:javascript&sort=stars&order=desc&per_page=10
 	const [loading, setLoading] = useState(false);
@@ -12,11 +13,12 @@ const ExplorePage = () => {
 		setLoading(true);
 		setRepos([]);
 		try {
-			const res = await fetch(`https://api.github.com/search/repositories?q=language:${language}&sort=stars&order=desc&per_page=10`);
-			const data =await res.json();
+			const res = await fetch(
+				`https://api.github.com/search/repositories?q=language:${language}&sort=stars&order=desc&per_page=10`
+			);
+			const data = await res.json();
+			// Use data.items instead of repos
 			setRepos(data.items);
-			
-
 			setSelectedLanguage(language);
 		} catch (error) {
 			toast.error(error.message);
@@ -31,9 +33,9 @@ const ExplorePage = () => {
 				<div className='flex flex-wrap gap-2 my-2 justify-center'>
 					<img
 						src='/javascript.svg'
-						alt='JavaScript ogo'
+						alt='JavaScript logo'
 						className='h-11 sm:h-20 cursor-pointer'
-						onClick={() => exploreRepos(`javascript`)}
+						onClick={() => exploreRepos("javascript")}
 					/>
 					<img
 						src='/typescript.svg'
@@ -62,7 +64,7 @@ const ExplorePage = () => {
 				</div>
 				{repos.length > 0 && (
 					<h2 className='text-lg font-semibold text-center my-4'>
-						<span className='bg-blue-100 text-blue-800 font-medium me-2 px-2.5 py-0.5 rounded-full '>
+						<span className='bg-blue-100 text-blue-800 font-medium me-2 px-2.5 py-0.5 rounded-full'>
 							{selectedLanguage.toUpperCase()}{" "}
 						</span>
 						Repositories
@@ -74,4 +76,5 @@ const ExplorePage = () => {
 		</div>
 	);
 };
+
 export default ExplorePage;
