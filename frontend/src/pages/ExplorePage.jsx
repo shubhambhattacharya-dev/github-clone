@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 import Spinner from "../component/Spinner";
 import Repos from "../component/Repos";
 
-const ExplorePage = () => {
+const ExplorePage = () => { 
 	const [loading, setLoading] = useState(false);
 	const [repos, setRepos] = useState([]);
 	const [selectedLanguage, setSelectedLanguage] = useState("");
