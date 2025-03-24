@@ -22,7 +22,7 @@ const SignUpPage = () => {
               height="32"
               viewBox="0 0 16 16"
               width="32"
-              className="text-white-800  transition-colors"
+              className="text-white-800 transition-colors"
               aria-hidden="true"
             >
               <path
@@ -33,7 +33,7 @@ const SignUpPage = () => {
             </svg>
           </div>
 
-          <h2 className="text-2xl font-bold text-center text-cream-800  transition-colors">
+          <h2 className="text-2xl font-bold text-center text-cream-800 transition-colors">
             Sign up for GitHub
           </h2>
 
@@ -100,11 +100,17 @@ const SignUpPage = () => {
           <div className="mt-6 text-center text-sm text-gray-500">
             <p>
               By creating an account, you agree to the{' '}
-              <Link to="/terms" className="text-blue-600 hover:text-blue-500 underline transition-colors">
+              <Link
+                to="/terms"
+                className="text-blue-600 hover:text-blue-500 underline transition-colors"
+              >
                 Terms of Service
               </Link>
               . For more information about GitHub's privacy practices, see the{' '}
-              <Link to="/privacy" className="text-blue-600 hover:text-blue-500 underline transition-colors">
+              <Link
+                to="/privacy"
+                className="text-blue-600 hover:text-blue-500 underline transition-colors"
+              >
                 Privacy Statement
               </Link>
               .
@@ -114,7 +120,10 @@ const SignUpPage = () => {
           {/* Sign In Link */}
           <div className="mt-6 text-center text-sm text-gray-500 p-4 rounded-lg">
             Already have an account?{' '}
-            <Link to="/login" className="text-blue-600 hover:text-blue-500 font-semibold underline transition-colors">
+            <Link
+              to="/login"
+              className="text-blue-600 hover:text-blue-500 font-semibold underline transition-colors"
+            >
               Sign in instead
             </Link>
           </div>
