@@ -1,132 +1,39 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { FaGithub, FaUnlockAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const SignUpPage = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Add your signup logic here
-    console.log({ username, email, password });
+  const handleLoginWithGithub = () => {
+    window.open("http://localhost:5000/api/auth/github", "_self");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-glass">
-      <div className="w-full max-w-md rounded-xl transition-all duration-300">
-        <div className="p-8 space-y-6">
-          {/* GitHub Logo */}
-          <div className="flex justify-center">
-            <svg
-              height="32"
-              viewBox="0 0 16 16"
-              width="32"
-              className="text-white-800 transition-colors"
-              aria-hidden="true"
-            >
-              <path
-                fill="currentColor"
-                fillRule="evenodd"
-                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
-              />
-            </svg>
-          </div>
+    <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0">
+      <div className="w-full rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0 bg-glass">
+        <div className="p-6 space-y-6 sm:p-8">
+          <h1 className="text-xl font-bold md:text-2xl text-center">Create Account</h1>
 
-          <h2 className="text-2xl font-bold text-center text-cream-800 transition-colors">
-            Sign up for GitHub
-          </h2>
+          <button
+            type="button"
+            className="text-white bg-[#24292F] hover:bg-[#24292F]/90 focus:ring-4
+            focus:ring-[#24292F]/50 font-medium rounded-lg flex gap-2 p-2 items-center w-full 
+            text-center justify-center"
+            onClick={handleLoginWithGithub}
+          >
+            <FaGithub className="w-5 h-5" />
+            Sign up with Github
+          </button>
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* Username Field */}
-            <div>
-              <label className="block text-sm font-medium mb-2 text-gray-600">
-                Username
-              </label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 placeholder-gray-400 text-gray-800 transition-all"
-                placeholder="Enter your username"
-                required
-              />
-            </div>
+          <p className="text-gray-300 text-center">
+            By signing up, you will unlock all the features of the app.
+            <FaUnlockAlt className="w-4 h-4 inline mx-2" />
+          </p>
 
-            {/* Email Field */}
-            <div>
-              <label className="block text-sm font-medium mb-2 text-gray-600">
-                Email address
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 placeholder-gray-400 text-gray-800 transition-all"
-                placeholder="you@example.com"
-                required
-              />
-            </div>
-
-            {/* Password Field */}
-            <div>
-              <label className="block text-sm font-medium mb-2 text-gray-600">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 placeholder-gray-400 text-gray-800 transition-all"
-                placeholder="Create a password"
-                required
-              />
-              <p className="mt-3 text-sm text-gray-500 leading-relaxed">
-                Make sure it's at least 15 characters OR at least 8 characters
-                including a number and a lowercase letter.
-              </p>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full py-3 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all font-medium"
-            >
-              Create account
-            </button>
-          </form>
-
-          {/* Legal Text */}
-          <div className="mt-6 text-center text-sm text-gray-500">
-            <p>
-              By creating an account, you agree to the{' '}
-              <Link
-                to="/terms"
-                className="text-blue-600 hover:text-blue-500 underline transition-colors"
-              >
-                Terms of Service
-              </Link>
-              . For more information about GitHub's privacy practices, see the{' '}
-              <Link
-                to="/privacy"
-                className="text-blue-600 hover:text-blue-500 underline transition-colors"
-              >
-                Privacy Statement
-              </Link>
-              .
-            </p>
-          </div>
-
-          {/* Sign In Link */}
-          <div className="mt-6 text-center text-sm text-gray-500 p-4 rounded-lg">
-            Already have an account?{' '}
-            <Link
-              to="/login"
-              className="text-blue-600 hover:text-blue-500 font-semibold underline transition-colors"
-            >
-              Sign in instead
+          <p className="text-sm font-light text-gray-500 text-center">
+            Already have an account?{" "}
+            <Link to="/login" className="font-medium text-primary-600 hover:underline text-blue-600">
+              Login
             </Link>
-          </div>
+          </p>
         </div>
       </div>
     </div>
