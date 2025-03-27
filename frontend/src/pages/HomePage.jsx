@@ -15,8 +15,13 @@ const HomePage = () => {
   const getUserProfileAndRepos = useCallback(async (username = "shubhambhattacharya-dev") => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/users/profile/${username}`);
-      const { repos,userProfile } = await res.json();
+      const res = await fetch(`/api/users/profile/${username}`);
+      
+      if (!res.ok) {
+        throw new Error("Failed to fetch user profile.");
+      }
+
+      const { repos = [], userProfile = null } = await res.json(); // Ensure default values
 
       console.log("userProfile:", userProfile);
       setUserProfileInfo(userProfile);
@@ -26,12 +31,12 @@ const HomePage = () => {
         setRepos(sortedRepos);
         console.log("repos:", sortedRepos);
       } else {
-        setRepos([]);
+        setRepos([]); // Always set an array to prevent errors
       }
 
       return { userProfile, repos };
     } catch (error) {
-      toast.error(error.message || "Something went wrong");
+      toast.error(error.message || "Something went wrong.");
       return { userProfile: null, repos: [] };
     } finally {
       setLoading(false);
@@ -49,11 +54,9 @@ const HomePage = () => {
     setUserProfileInfo(null);
 
     const result = await getUserProfileAndRepos(username);
-    if (result) {
-      setUserProfileInfo(result.userProfile);
-      setRepos(result.repos);
-    }
-
+    setUserProfileInfo(result?.userProfile || null);
+    setRepos(result?.repos || []);
+    
     setLoading(false);
     setSortType("recent");
   };
@@ -78,9 +81,9 @@ const HomePage = () => {
       <Search onSearch={onSearch} />
       {repos.length > 0 && <SortRepos onSort={onSort} sortType={sortType} />}
       <div className="flex gap-4 flex-col lg:flex-row justify-center items-start overflow-hidden">
-        {userProfile && !loading && <ProfileInfo userProfile={userProfile} />}
-        {!loading && <Repos repos={repos} />}
         {loading && <Spinner />}
+        {!loading && userProfile && <ProfileInfo userProfile={userProfile} />}
+        {!loading && <Repos repos={repos} />}
       </div>
     </div>
   );

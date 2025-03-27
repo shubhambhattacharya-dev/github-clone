@@ -1,43 +1,34 @@
 import { MdLogout } from "react-icons/md";
+import { useAuthContext } from "../context/AuthContext";
+import { toast } from "react-hot-toast";
+// TODO Implement Logout functionality
 
 const Logout = () => {
-  const handleLogout = () => {
-    // TODO: Implement actual logout functionality
-    console.log("Logout clicked");
-    // Suggested: Add confirmation dialog and actual logout logic
-  };
+	const { authUser, setAuthUser } = useAuthContext();
 
-  return (
-    <div className="flex flex-col items-center gap-4">
-      <img
-        src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
-        alt="User profile"
-        className="w-10 h-10 rounded-full border-2 border-gray-300 hover:border-indigo-400 transition-all"
-        loading="lazy"
-        width="40"
-        height="40"
-      />
+	const handleLogout = async () => {
+		try {
+			const res = await fetch("/api/auth/logout", { credentials: "include" });
+			const data = await res.json();
+			console.log(data);
+			setAuthUser(null);
+		} catch (error) {
+			toast.error(error.message);
+		}
+	};
 
-      <button
-        onClick={handleLogout}
-        className="w-full flex items-center justify-center p-2 rounded-lg bg-glass mt-auto border border-gray-300 hover:border-indigo-400 hover:bg-gray-700/30 transition-colors group"
-        aria-label="Logout"
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            handleLogout();
-          }
-        }}
-      >
-        <MdLogout 
-          size={22}
-          className="text-gray-100 group-hover:text-indigo-300 transition-colors"
-        />
-        <span className="sr-only">Logout</span>
-      </button>
-    </div>
-  );
+	return (
+		<>
+			<img src={authUser?.avatarUrl} className='w-10 h-10 rounded-full border border-gray-800' />
+
+			<div
+				className='cursor-pointer flex items-center p-2 rounded-lg bg-glass mt-auto border border-gray-800'
+				onClick={handleLogout}
+			>
+				<MdLogout size={22} />
+			</div>
+		</>
+	);
 };
 
 export default Logout;

@@ -6,40 +6,17 @@ import { MdOutlineExplore } from "react-icons/md";
 import Logout from './Logout';
 import { PiSignInBold } from "react-icons/pi";
 import { MdEditDocument } from 'react-icons/md';
+import { useAuthContext } from '../context/AuthContext';
 
-const Sidebar = ({ authUser = false}) => {  // Accept authUser as prop for better control
-  
+const Sidebar = () => { 
+  const { authUser } = useAuthContext(); // Get authUser from context
+
   const navItems = [
-    { 
-      path: '/',
-      icon: <IoHomeSharp size={22} />,
-      label: 'Home',
-      visible: true
-    },
-    {
-      path: '/likes',
-      icon: <FaHeart size={22} />,
-      label: 'Likes',
-      visible: authUser
-    },
-    {
-      path: '/explore',
-      icon: <MdOutlineExplore size={22} />,
-      label: 'Explore',
-      visible: authUser
-    },
-    {
-      path: '/login',
-      icon: <PiSignInBold size={22} />,
-      label: 'Login',
-      visible: !authUser
-    },
-    {
-      path: '/signup',
-      icon: <MdEditDocument size={22} />,
-      label: 'Sign Up',
-      visible: !authUser
-    }
+    { path: '/', icon: <IoHomeSharp size={22} />, label: 'Home', visible: true },
+    { path: '/likes', icon: <FaHeart size={22} />, label: 'Likes', visible: !!authUser },
+    { path: '/explore', icon: <MdOutlineExplore size={22} />, label: 'Explore', visible: !!authUser },
+    { path: '/login', icon: <PiSignInBold size={22} />, label: 'Login', visible: !authUser },
+    { path: '/signup', icon: <MdEditDocument size={22} />, label: 'Sign Up', visible: !authUser }
   ];
 
   return (
@@ -50,24 +27,23 @@ const Sidebar = ({ authUser = false}) => {  // Accept authUser as prop for bette
       border-r-2 border-white/15 hover:border-indigo-400/80 rounded-r-xl
       text-gray-100 hover:text-white/90 
       shadow-[0_0_25px_-10px_rgba(59,130,246,0.3)] hover:shadow-[0_0_35px_-5px_rgba(59,130,246,0.4)]
-       overflow-hidden
+      overflow-hidden
       after:absolute after:top-0 after:left-0 after:w-[2px] after:h-full after:bg-gradient-to-b after:from-indigo-400 after:via-purple-400 after:to-transparent
-      after:opacity-0
-      hover:after:opacity-60" 
+      after:opacity-0 hover:after:opacity-60"
     >
       {/* Skip navigation link for screen readers */}
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:rounded-lg">
         Skip to main content
       </a>
 
-      <nav className='h-full flex flex-col gap-3' aria-label="Primary navigation">
+      <nav className="h-full flex flex-col gap-3" aria-label="Primary navigation">
         <Link 
-          to='/' 
-          className='flex justify-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:rounded-lg'
+          to="/" 
+          className="flex justify-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:rounded-lg"
           aria-label="Home"
         >
           <img 
-            className='h-8 w-8' 
+            className="h-8 w-8" 
             src="/github.svg" 
             alt="GitHub Logo" 
             loading="lazy"
@@ -76,34 +52,34 @@ const Sidebar = ({ authUser = false}) => {  // Accept authUser as prop for bette
           />
         </Link>
 
-        {navItems.map((item) => item.visible && (
-          <Link
-            key={item.path}
-            to={item.path}
-            className='p-1.5 flex justify-center transition-colors duration-200 rounded-lg 
-                     hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500'
-            aria-label={item.label}
-            role="link"
-            tabIndex={0}
-          >
-            {item.icon}
-            <span className="sr-only">{item.label}</span>
-          </Link>
-        ))}
+        {navItems
+          .filter(item => item.visible) // Ensure only visible items are mapped
+          .map(item => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className="p-1.5 flex justify-center transition-colors duration-200 rounded-lg 
+                     hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              aria-label={item.label}
+              role="link"
+              tabIndex={0}
+            >
+              {item.icon}
+              <span className="sr-only">{item.label}</span>
+            </Link>
+          ))}
 
         {authUser && (
-          <div className='flex flex-col mt-auto gap-2'>
+          <div className="flex flex-col mt-auto gap-2">
             <Logout
               className="focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:rounded-lg"
               aria-label="Logout"
             />
-
-
           </div>
         )}
       </nav>
     </aside>
   );
-}
+};
 
 export default Sidebar;
