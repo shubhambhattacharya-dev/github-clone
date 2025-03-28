@@ -4,10 +4,12 @@
 	"description": "",
 	"main": "server.js",
 	"scripts": {
-		"dev": "nodemon backend/server.js",
-"build": "npm install && cd frontend && npm install && npm run build",
+		"dev": "npx vite",
+        "build": "node node_modules/vite/bin/vite.js build",
 
-		"start": "node backend/server.js"
+		"start": "node backend/server.js",
+		
+    "preview": "npx vite preview"
 	},
 	"type": "module",
 	"keywords": [],
@@ -24,5 +26,6 @@
 	},
 	"devDependencies": {
 		"nodemon": "^3.0.3"
+		
 	}
 }
