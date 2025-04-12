@@ -5,7 +5,7 @@
 	"main": "server.js",
 	"scripts": {
 	  "dev": "nodemon backend/server.js",
-	  "build": "cd frontend && npm install && npm run build",
+	   "build": "chmod +x node_modules/.bin/vite && vite build",
 	  "start": "node backend/server.js"
 	},
 	"type": "module",
