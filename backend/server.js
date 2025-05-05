@@ -25,20 +25,20 @@ app.use(session({ secret: "keyboard cat", resave: false, saveUninitialized: fals
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Here we can remove the cors, it's not necessary in production because the frontend and backend are on the same domain. I forgot to mention that in the video, sorry about that.🙄
-// app.use(cors());
-
+// Here we can remove the cors, it's not necessary in production because the frontend and backend are on the same domain.
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/explore", exploreRoutes);
 
+// Serve frontend static files from the 'frontend/dist' folder
 app.use(express.static(path.join(__dirname, "/frontend/dist")));
 
+// Catch-all route to serve index.html for frontend routes
 app.get("*", (req, res) => {
-	res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
+  res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
 });
 
 app.listen(PORT, () => {
-	console.log(`Server started on http://localhost:${PORT}`);
-	connectMongoDB();
+  console.log(`Server started on http://localhost:${PORT}`);
+  connectMongoDB();
 });
