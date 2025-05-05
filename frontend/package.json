@@ -7,11 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "postinstall": "chmod +x ./node_modules/.bin/vite"
+    "preview": "vite preview"
   },
   "dependencies": {
-    "github-clone": "file:..",
     "mern-github-yt": "file:..",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
