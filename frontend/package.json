@@ -4,11 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
+  "dev": "npx vite",
+  "build": "npx vite build",
+  "lint": "eslint .",
+  "preview": "npx vite preview"
+},
+
   "dependencies": {
     "mern-github-yt": "file:..",
     "react": "^19.0.0",
