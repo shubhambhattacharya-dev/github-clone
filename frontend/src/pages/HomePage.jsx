@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-import ProfileInfo from "../components/ProfileInfo";
+import ProfileInfo from "../components/ProfileInfo"; // ✅ correct
+
 import Repos from "../components/Repos";
 import Search from "../components/Search";
 import SortRepos from "../components/SortRepos";
