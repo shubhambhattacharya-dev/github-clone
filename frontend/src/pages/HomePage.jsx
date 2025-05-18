@@ -3,10 +3,10 @@ import toast from "react-hot-toast";
 
 import ProfileInfo from "../component/ProfileInfo"; // ✅ correct
 
-import Repos from "../components/Repos";
-import Search from "../components/Search";
-import SortRepos from "../components/SortRepos";
-import Spinner from "../components/Spinner";
+import Repos from "../component/Repos";
+import Search from "../component/Search";
+import SortRepos from "../component/SortRepos";
+import Spinner from "../component/Spinner";
 
 const HomePage = () => {
 	const [userProfile, setUserProfile] = useState(null);
