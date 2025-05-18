@@ -5,50 +5,41 @@ import User from "../models/user.model.js";
 
 dotenv.config();
 
-passport.serializeUser((user, done) => {
-	done(null, user.id); // Store only the user ID in the session
+passport.serializeUser(function (user, done) {
+	done(null, user);
 });
 
-passport.deserializeUser(async (id, done) => {
-	try {
-		const user = await User.findById(id);
-		done(null, user);
-	} catch (err) {
-		console.error("Error deserializing user:", err);
-		done(err, null);
-	}
+passport.deserializeUser(function (obj, done) {
+	done(null, obj);
 });
 
+// Use the GitHubStrategy within Passport.
+//   Strategies in Passport require a `verify` function, which accept
+//   credentials (in this case, an accessToken, refreshToken, and GitHub
+//   profile), and invoke a callback with a user object.
 passport.use(
 	new GitHubStrategy(
 		{
 			clientID: process.env.GITHUB_CLIENT_ID,
 			clientSecret: process.env.GITHUB_CLIENT_SECRET,
-			callbackURL: "http://localhost:5000/api/auth/github/callback",
+			callbackURL: "https://github-app-mern-p709.onrender.com/api/auth/github/callback",
 		},
-		async (accessToken, refreshToken, profile, done) => {
-			try {
-				// Use GitHub username if available; otherwise, fallback to GitHub ID
-				const username = profile.username || profile.id;
-				let user = await User.findOne({ username });
-
-				// If user doesn't exist, create a new one
-				if (!user) {
-					user = new User({
-						name: profile.displayName || "GitHub User", // Handle missing name
-						username,
-						profileUrl: profile.profileUrl,
-						avatarUrl: profile.photos?.[0]?.value || "", // Handle missing photo
-						likedProfiles: [],
-						likedBy: [],
-					});
-					await user.save();
-				}
-
+		async function (accessToken, refreshToken, profile, done) {
+			const user = await User.findOne({ username: profile.username });
+			// signup
+			if (!user) {
+				const newUser = new User({
+					name: profile.displayName,
+					username: profile.username,
+					profileUrl: profile.profileUrl,
+					avatarUrl: profile.photos[0].value,
+					likedProfiles: [],
+					likedBy: [],
+				});
+				await newUser.save();
+				done(null, newUser);
+			} else {
 				done(null, user);
-			} catch (error) {
-				console.error("GitHub authentication error:", error);
-				done(error, null);
 			}
 		}
 	)
