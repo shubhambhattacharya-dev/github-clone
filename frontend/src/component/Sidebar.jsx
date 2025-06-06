@@ -49,6 +49,7 @@ const Sidebar = () => {
             loading="lazy"
             width="32"
             height="32"
+            link="https://github.com"
           />
         </Link>
 
