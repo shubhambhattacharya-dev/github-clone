@@ -24,17 +24,15 @@ router.get("/check", (req, res) => {
 	}
 });
 
-// 🚀 Get logged-in user's GitHub username (NEW ROUTE)
 router.get("/me", (req, res) => {
 	if (!req.user) {
 		return res.status(401).json({ error: "Not logged in" });
 	}
 
-	// Only return necessary data
+
 	res.json({ username: req.user.username });
 });
 
-// Logout route
 router.get("/logout", (req, res) => {
 	req.logout((err) => {
 		if (err) {
