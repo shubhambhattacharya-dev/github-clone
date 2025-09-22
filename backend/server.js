@@ -30,10 +30,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/explore", exploreRoutes);
 
-// Serve frontend static files from the 'frontend/dist' folder
 app.use(express.static(path.join(__dirname, "/frontend/dist")));
 
-// Catch-all route to serve index.html for frontend routes
+
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
 });
