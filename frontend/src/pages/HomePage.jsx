@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import ProfileInfo from "../component/ProfileInfo";
@@ -16,43 +16,49 @@ const HomePage = () => {
 
 	const [sortType, setSortType] = useState("recent");
 
-	const getUserProfileAndRepos = useCallback(async (username) => {
+	// Unified loading state management
+	const getUserProfileAndRepos = async (username) => {
 		if (!username) {
 			toast.error("No username provided");
-			return;
+			return { userProfile: null, repos: [] };
 		}
-		setLoading(true);
+
+		setLoading(true); // start loading
 		try {
-			const res = await fetch(`/api/users/profile/${username}`);
+			const res = await fetch(`/api/users/profile/${username}`, {
+				credentials: "include" // <--- Send cookies for authenticated backend
+			});
 			const { repos, userProfile } = await res.json();
 
-			repos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // descending, recent first
+			const sortedRepos = [...repos].sort(
+				(a, b) => new Date(b.created_at) - new Date(a.created_at)
+			); // descending, recent first
 
-			setRepos(repos);
+			setRepos(sortedRepos);
 			setUserProfile(userProfile);
 
-			return { userProfile, repos };
+			return { userProfile, repos: sortedRepos };
 		} catch (error) {
-			toast.error(error.message);
+			toast.error(error?.message || "Failed to fetch user profile and repos"); // safe default
+			return { userProfile: null, repos: [] };
 		} finally {
-			setLoading(false);
+			setLoading(false); // stop loading
 		}
-	}, []);
+	};
 
 	useEffect(() => {
 		if (authUser && authUser.username) {
 			getUserProfileAndRepos(authUser.username);
 		} else {
-			// Optionally, you can clear profile or show a message if not logged in
 			setUserProfile(null);
 			setRepos([]);
 		}
-	}, [authUser, getUserProfileAndRepos]);
+	}, [authUser]);
 
 	const onSearch = async (e, username) => {
 		e.preventDefault();
 
-		setLoading(true);
+		// No need to manually setLoading here; getUserProfileAndRepos already manages it
 		setRepos([]);
 		setUserProfile(null);
 
@@ -60,20 +66,22 @@ const HomePage = () => {
 
 		setUserProfile(userProfile);
 		setRepos(repos);
-		setLoading(false);
 		setSortType("recent");
 	};
 
 	const onSort = (sortType) => {
+		const sortedRepos = [...repos]; // Create a new array to avoid mutating state directly
+
 		if (sortType === "recent") {
-			repos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+			sortedRepos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 		} else if (sortType === "stars") {
-			repos.sort((a, b) => b.stargazers_count - a.stargazers_count);
+			sortedRepos.sort((a, b) => b.stargazers_count - a.stargazers_count);
 		} else if (sortType === "forks") {
-			repos.sort((a, b) => b.forks_count - a.forks_count);
+			sortedRepos.sort((a, b) => b.forks_count - a.forks_count);
 		}
+
 		setSortType(sortType);
-		setRepos([...repos]);
+		setRepos(sortedRepos);
 	};
 
 	return (

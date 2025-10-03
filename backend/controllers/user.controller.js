@@ -30,40 +30,20 @@ export const getUserProfileAndRepos = async (req, res) => {
 	}
 };
 
-export const likeProfile = async (req, res) => {
-	try {
-		const { username } = req.params;
-		const user = await User.findById(req.user?._id.toString());
-		if (!user) return res.status(401).json({ error: "Unauthorized" });
-
-		const userToLike = await User.findOne({ username });
-		if (!userToLike) return res.status(404).json({ error: "User is not a member" });
-
-		if (user.likedProfiles.includes(userToLike.username)) {
-			return res.status(400).json({ error: "User already liked" });
-		}
-
-		// Use MongoDB `$push` for atomic updates
-		await Promise.all([
-			User.updateOne({ _id: user._id }, { $push: { likedProfiles: userToLike.username } }),
-			User.updateOne({ username }, { 
-				$push: { likedBy: { username: user.username, avatarUrl: user.avatarUrl, likedDate: Date.now() } }
-			})
-		]);
-
-		return res.status(200).json({ message: "User liked" });
-	} catch (error) {
-		return res.status(500).json({ error: error.message });
-	}
-};
-
 export const getLikes = async (req, res) => {
 	try {
-		const user = await User.findById(req.user?._id.toString());
-		if (!user) return res.status(401).json({ error: "Unauthorized" });
+		const userId = req.user && (req.user._id || req.user.id);
+		if (!userId) {
+			return res.status(401).json({ error: 'Not authenticated' });
+		}
 
-		return res.status(200).json({ likedBy: user.likedBy || [] });
+		const user = await User.findById(userId);
+		if (!user) {
+			return res.status(404).json({ error: 'User not found' });
+		}
+
+		res.json({ likedBy: user.likedBy });
 	} catch (error) {
-		return res.status(500).json({ error: error.message });
+		res.status(500).json({ error: error.message });
 	}
 };

@@ -1,5 +1,11 @@
-export const explorePopularRepos = async (req, res) => {
+export const explorePopularRepos = async (req, res, next) => {
 	const { language } = req.params;
+
+	if (!language || typeof language !== "string" || language.trim() === "") {
+		const error = new Error("Language parameter is required");
+		error.statusCode = 400;
+		throw error;
+	}
 
 	try {
 		// 5000 requests per hour for authenticated requests
@@ -11,10 +17,18 @@ export const explorePopularRepos = async (req, res) => {
 				},
 			}
 		);
-		const data = await response.json();
 
+		// Check for non-200 responses
+		if (!response.ok) {
+			let message = `GitHub API error: ${response.status}`;
+			if (response.status === 403) message = "GitHub API rate limit exceeded";
+			if (response.status === 404) message = "Repositories not found";
+			throw new Error(message);
+		}
+
+		const data = await response.json();
 		res.status(200).json({ repos: data.items });
 	} catch (error) {
-		res.status(500).json({ error: error.message });
+		next(error);
 	}
 };

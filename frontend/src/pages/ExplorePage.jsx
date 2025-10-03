@@ -12,7 +12,7 @@ const LANGUAGE_LOGOS = [
   { src: "/java.svg", alt: "Java", language: "java" }
 ];
 
-const API_URL = "https://api.github.com/search/repositories";
+const API_URL = "/api/explore";
 
 const ExplorePage = () => {
   const [loading, setLoading] = useState(false);
@@ -21,28 +21,21 @@ const ExplorePage = () => {
 
   const exploreRepos = async (language) => {
     if (language === selectedLanguage) return; // Prevent duplicate requests
-    
+
     setLoading(true);
     setRepos([]);
-    
-    try {
-      const params = new URLSearchParams({
-        q: `language:${language}`,
-        sort: "stars",
-        order: "desc",
-        per_page: 10
-      });
 
-      const response = await fetch(`${API_URL}?${params}`);
+    try {
+      const response = await fetch(`${API_URL}/${language}`);
       if (!response.ok) {
         const error = await response.json().catch(() => ({ message: "Unknown error" }));
-        throw new Error(`GitHub API Error: ${error.message}`);
+        throw new Error(`API Error: ${error.message}`);
       }
 
-      const { items } = await response.json();
-      if (!items?.length) throw new Error(`No ${language} repositories found`);
+      const { repos } = await response.json();
+      if (!repos?.length) throw new Error(`No ${language} repositories found`);
 
-      setRepos(items);
+      setRepos(repos);
       setSelectedLanguage(language);
     } catch (error) {
       toast.error(error.message);

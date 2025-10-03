@@ -14,19 +14,31 @@ export const AuthContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		const checkUserLoggedIn = async () => {
-			setLoading(true);
 			try {
 				const res = await fetch("/api/auth/check", { credentials: "include" });
 				const data = await res.json();
-				setAuthUser(data.user); // null or authenticated user object
+
+				if (!res.ok) {
+					throw new Error(data?.error || "Failed to check authentication status");
+				}
+
+				setAuthUser(data.user || null); // Set user or fallback to null
 			} catch (error) {
-				toast.error(error.message);
+				toast.error(error?.message || "Authentication check failed"); // Safe default
+				setAuthUser(null); // Fallback
 			} finally {
-				setLoading(false);
+				setLoading(false); // Always stop loading
 			}
 		};
+
 		checkUserLoggedIn();
 	}, []);
 
-	return <AuthContext.Provider value={{ authUser, setAuthUser, loading }}>{children}</AuthContext.Provider>;
+	return (
+		<AuthContext.Provider value={{ authUser, setAuthUser, loading }}>
+			{children}
+		</AuthContext.Provider>
+	);
 };
+
+export default AuthContextProvider;

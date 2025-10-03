@@ -1,11 +1,10 @@
 import express from "express";
-import { getLikes, getUserProfileAndRepos, likeProfile } from "../controllers/user.controller.js";
+import { getUserProfileAndRepos } from "../controllers/user.controller.js";
 import { ensureAuthenticated } from "../middleware/ensureAuthenticated.js";
 
 const router = express.Router();
 
+// Allow public access to user profiles (no auth required)
 router.get("/profile/:username", getUserProfileAndRepos);
-router.get("/likes", ensureAuthenticated, getLikes);
-router.post("/like/:username", ensureAuthenticated, likeProfile); // Fixed function call
 
 export default router;

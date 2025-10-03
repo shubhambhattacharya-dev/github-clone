@@ -26,11 +26,10 @@ const Search = ({ onSearch }) => {
         <input
           type='search'
           id='default-search'
-          className={`block w-full p-4 ps-12 text-md rounded-lg bg-glass border border-gray-600/30 
-          backdrop-blur-2xl focus:border-blue-400/40 focus:outline-none 
-          placeholder-gray-400/80 transition-all duration-300 shadow-2xl 
-          shadow-gray-900/20 focus:shadow-blue-900/40
-          ${isSearching ? 'text-white' : 'text-black'}`} // Dynamic text color
+          className={`block w-full p-4 ps-12 text-md rounded-lg bg-glass border border-gray-600/30
+          backdrop-blur-2xl focus:border-blue-400/40 focus:outline-none
+          placeholder-gray-400/80 transition-all duration-300 shadow-2xl
+          shadow-gray-900/20 focus:shadow-blue-900/40 text-white`}
           placeholder='Search username...'
           required
           value={username}

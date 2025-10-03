@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { IoHomeSharp } from "react-icons/io5";
 import { FaHeart } from "react-icons/fa";
 import { MdOutlineExplore } from "react-icons/md";
+import { FaSave } from "react-icons/fa";
 import Logout from './Logout';
 import { PiSignInBold } from "react-icons/pi";
 import { MdEditDocument } from 'react-icons/md';
+import { AiOutlineSave } from "react-icons/ai"; // New icon for Saved
 import { useAuthContext } from '../context/AuthContext';
 
 const Sidebar = () => { 
@@ -15,6 +17,8 @@ const Sidebar = () => {
     { path: '/', icon: <IoHomeSharp size={22} />, label: 'Home', visible: true },
     { path: '/likes', icon: <FaHeart size={22} />, label: 'Likes', visible: !!authUser },
     { path: '/explore', icon: <MdOutlineExplore size={22} />, label: 'Explore', visible: !!authUser },
+    { path: '/saved', icon: <AiOutlineSave size={22} />, label: 'Saved', visible: !!authUser }, // Added Saved
+    { path: '/analytics', icon: <FaSave size={22} />, label: 'Analytics', visible: !!authUser }, // Unique Analytics button icon
     { path: '/login', icon: <PiSignInBold size={22} />, label: 'Login', visible: !authUser },
     { path: '/signup', icon: <MdEditDocument size={22} />, label: 'Sign Up', visible: !authUser }
   ];
@@ -49,7 +53,6 @@ const Sidebar = () => {
             loading="lazy"
             width="32"
             height="32"
-            
           />
         </Link>
 
