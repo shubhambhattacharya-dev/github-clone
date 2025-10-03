@@ -1,4 +1,5 @@
 import User from '../models/user.model.js';
+import { checkAndAwardAchievements } from './achievement.controller.js';
 
 // Centralized error formatting for saved repos
 const handleSavedError = (error) => {
@@ -60,10 +61,10 @@ const fetchRepoData = async (repoFullName) => {
 export const saveRepository = async (req, res, next) => {
   try {
     const userId = req.user && (req.user.id || req.user._id);
-    const { repoFullName } = req.body; // e.g., "facebook/react"
+    const { repo } = req.body; // Full repo object from frontend
 
-    if (!repoFullName || typeof repoFullName !== "string" || repoFullName.trim() === "") {
-      const error = new Error("Repository full name required");
+    if (!repo || !repo.full_name) {
+      const error = new Error("Repository data required");
       error.statusCode = 400;
       throw error;
     }
@@ -71,11 +72,6 @@ export const saveRepository = async (req, res, next) => {
     if (!userId) {
       const error = new Error('Not authenticated');
       error.statusCode = 401;
-      throw error;
-    }
-    if (!repoFullName) {
-      const error = new Error('Repository full name required');
-      error.statusCode = 400;
       throw error;
     }
 
@@ -86,40 +82,48 @@ export const saveRepository = async (req, res, next) => {
       throw error;
     }
 
-    const alreadySaved = user.savedRepos.some(saved => saved.repoId === repoFullName);
+    const alreadySaved = user.savedRepos.some(saved => saved.id === repo.id);
     if (alreadySaved) {
-      return res.json({ 
-        success: true, 
-        message: 'Repository already saved', 
-        data: user.savedRepos 
+      return res.json({
+        success: true,
+        message: 'Repository already saved',
+        data: user.savedRepos
       });
     }
 
-    // Fetch repo data from GitHub
-    const repoData = await fetchRepoData(repoFullName);
+    // Use repo data from frontend instead of fetching from GitHub
     const repoObject = {
-      repoId: repoFullName,
-      name: repoData.name,
-      description: repoData.description,
-      html_url: repoData.html_url,
-      clone_url: repoData.clone_url,
-      stargazers_count: repoData.stargazers_count,
-      forks_count: repoData.forks_count,
-      language: repoData.language === "C#" ? "Csharp" : repoData.language,
-      created_at: repoData.created_at,
+      repoId: repo.full_name, // For backward compatibility
+      id: repo.id,
+      name: repo.name,
+      full_name: repo.full_name,
+      html_url: repo.html_url,
+      description: repo.description,
+      language: repo.language,
+      stargazers_count: repo.stargazers_count || 0,
+      forks_count: repo.forks_count || 0,
       owner: {
-        login: repoData.owner.login,
-        avatar_url: repoData.owner.avatar_url,
-      }
+        login: repo.owner?.login || '',
+        avatar_url: repo.owner?.avatar_url || '',
+      },
+      savedDate: new Date(),
     };
 
     user.savedRepos.push(repoObject);
     await user.save();
 
-    return res.json({ 
-      success: true, 
-      message: 'Repository saved successfully', 
-      data: user.savedRepos 
+    // Check for achievements
+    const unlockedAchievements = await checkAndAwardAchievements(user._id, 'repo_saved');
+
+    return res.json({
+      success: true,
+      message: 'Repository saved successfully',
+      data: user.savedRepos,
+      unlockedAchievements: unlockedAchievements.map(a => ({
+        name: a.name,
+        icon: a.icon,
+        description: a.description
+      }))
     });
   } catch (error) {
     next(handleSavedError(error));
@@ -130,8 +134,7 @@ export const saveRepository = async (req, res, next) => {
 export const unsaveRepository = async (req, res, next) => {
   try {
     const userId = req.user && (req.user.id || req.user._id);
-    // Get repoId from wildcard param
-    const repoId = req.params[0]; // repoFullName string
+    const { repoId } = req.params; // repo ID number
 
     if (!userId) {
       const error = new Error('Not authenticated');
@@ -139,9 +142,15 @@ export const unsaveRepository = async (req, res, next) => {
       throw error;
     }
 
+    if (!repoId) {
+      const error = new Error('Repository ID required');
+      error.statusCode = 400;
+      throw error;
+    }
+
     const user = await User.findByIdAndUpdate(
       userId,
-      { $pull: { savedRepos: { repoId: repoId } } },
+      { $pull: { savedRepos: { id: parseInt(repoId) } } },
       { new: true }
     );
 

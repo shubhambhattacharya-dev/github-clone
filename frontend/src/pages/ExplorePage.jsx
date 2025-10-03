@@ -50,7 +50,7 @@ const ExplorePage = () => {
         <h1 className="text-xl font-bold text-center mb-4">
           Explore Popular Repositories
         </h1>
-        
+
         <div className="flex flex-wrap gap-2 my-2 justify-center">
           {LANGUAGE_LOGOS.map(({ src, alt, language }) => (
             <button

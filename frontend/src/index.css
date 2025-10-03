@@ -34,3 +34,24 @@ body {
     hover:bg-gray-600/10 border border-gray-800 text-white;
   }
 }
+
+/* Dark mode styles */
+.dark body {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.95), rgba(0,0,0,0.6)), url("/bg.png");
+}
+
+.dark .bg-glass {
+  @apply bg-gray-800/50 border-gray-600 text-gray-100;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #333;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #666;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}

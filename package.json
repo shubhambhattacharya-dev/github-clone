@@ -7,7 +7,12 @@
 		"dev": "nodemon backend/server.js",
 		"build": "npm install && npm install --prefix frontend --production=false && npm run build --prefix frontend",
 		"start": "node backend/server.js",
-		"clean-install": "rm -rf node_modules frontend/node_modules && npm install && npm install --prefix frontend --production=false"
+		"clean-install": "rm -rf node_modules frontend/node_modules && npm install && npm install --prefix frontend --production=false",
+		"art:create-samples": "node create-sample-art.js all",
+		"art:preview": "node contribution-art-example.js preview",
+		"art:generate": "node contribution-art-example.js generate",
+		"hackathons": "node fetchHackathons.js",
+		"hackathons:help": "node fetchHackathons.js --help"
 	},
 	"type": "module",
 	"keywords": [],
@@ -22,6 +27,7 @@
 		"express-session": "^1.18.0",
 		"helmet": "^8.1.0",
 		"mongoose": "^8.1.1",
+		"node-fetch": "^3.3.0",
 		"passport": "^0.7.0",
 		"passport-github2": "^0.1.12"
 	},

@@ -43,6 +43,20 @@ const userSchema = new mongoose.Schema(
         }
       }
     ],
+
+    // NEW: Achievement system
+    achievements: [{
+      achievementId: { type: String, required: true },
+      unlockedAt: { type: Date, default: Date.now },
+      progress: { type: Number, default: 0 }
+    }],
+    totalPoints: { type: Number, default: 0 },
+    achievementStats: {
+      totalUnlocked: { type: Number, default: 0 },
+      rarestAchievement: String,
+      favoriteCategory: String
+    },
+    loginCount: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

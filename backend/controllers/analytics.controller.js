@@ -70,20 +70,43 @@ export const getRepoAnalytics = async (req, res, next) => {
         contributors: cached.contributors,
         commitActivity: cached.commitActivity,
         codeFrequency: cached.codeFrequency,
-        lastUpdated: cached.lastUpdated
+        lastUpdated: cached.lastUpdated,
+        ...(cached.warnings && cached.warnings.length > 0 && { warnings: cached.warnings })
       });
     }
 
-    // Fetch live data from GitHub
-    const [contributors, commitActivityRaw, codeFrequencyRaw] = await Promise.all([
-      fetchGitHubData(`/repos/${repoFullName}/contributors?per_page=10`),
-      fetchGitHubData(`/repos/${repoFullName}/stats/commit_activity`),
-      fetchGitHubData(`/repos/${repoFullName}/stats/code_frequency`)
-    ]);
+    // Fetch live data from GitHub with error handling for stats endpoints
+    let contributors = [];
+    let commitActivity = [];
+    let codeFrequency = [];
+    const warnings = [];
 
-    // Ensure commitActivity and codeFrequency are arrays
-    const commitActivity = Array.isArray(commitActivityRaw) ? commitActivityRaw : [];
-    const codeFrequency = Array.isArray(codeFrequencyRaw) ? codeFrequencyRaw : [];
+    try {
+      contributors = await fetchGitHubData(`/repos/${repoFullName}/contributors?per_page=10`);
+    } catch (error) {
+      if (error.statusCode === 404) {
+        throw new Error("Repository not found");
+      }
+      warnings.push("Could not fetch contributors data");
+    }
+
+    try {
+      const commitActivityRaw = await fetchGitHubData(`/repos/${repoFullName}/stats/commit_activity`);
+      commitActivity = Array.isArray(commitActivityRaw) ? commitActivityRaw : [];
+    } catch (error) {
+      if (error.statusCode !== 422) {
+        warnings.push("Could not fetch commit activity data");
+      }
+    }
+
+    try {
+      const codeFrequencyRaw = await fetchGitHubData(`/repos/${repoFullName}/stats/code_frequency`);
+      codeFrequency = Array.isArray(codeFrequencyRaw) ? codeFrequencyRaw : [];
+    } catch (error) {
+      if (error.statusCode !== 422) {
+        warnings.push("Could not fetch code frequency data");
+      }
+    }
 
     // Update or create cache
     const analytics = await AnalyticsCache.findOneAndUpdate(
@@ -102,7 +125,8 @@ export const getRepoAnalytics = async (req, res, next) => {
           additions: c[1],
           deletions: c[2]
         })),
-        lastUpdated: new Date()
+        lastUpdated: new Date(),
+        ...(warnings.length > 0 && { warnings })
       },
       { upsert: true, new: true }
     );
@@ -113,7 +137,8 @@ export const getRepoAnalytics = async (req, res, next) => {
       contributors: analytics.contributors,
       commitActivity: analytics.commitActivity,
       codeFrequency: analytics.codeFrequency,
-      lastUpdated: analytics.lastUpdated
+      lastUpdated: analytics.lastUpdated,
+      ...(warnings.length > 0 && { warnings })
     });
   } catch (err) {
     next(err);

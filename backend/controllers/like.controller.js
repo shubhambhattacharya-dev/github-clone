@@ -1,4 +1,5 @@
 import User from '../models/user.model.js';
+import { checkAndAwardAchievements } from './achievement.controller.js';
 
 // Centralized error formatting for likes
 const handleLikeError = (error) => {
@@ -72,10 +73,18 @@ export const likeProfile = async (req, res, next) => {
     target.likes.push(likerId);
     await target.save();
 
-    return res.json({ 
-      success: true, 
-      message: 'Profile liked successfully', 
-      likesCount: target.likes.length 
+    // Check for achievements
+    const unlockedAchievements = await checkAndAwardAchievements(likerId, 'like_given');
+
+    return res.json({
+      success: true,
+      message: 'Profile liked successfully',
+      likesCount: target.likes.length,
+      unlockedAchievements: unlockedAchievements.map(a => ({
+        name: a.name,
+        icon: a.icon,
+        description: a.description
+      }))
     });
   } catch (err) {
     const formattedError = handleLikeError(err);

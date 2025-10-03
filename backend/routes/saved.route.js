@@ -7,7 +7,7 @@ import { asyncHandler } from '../middleware/asyncWrapper.js';
 const router = express.Router();
 
 router.post('/', ensureAuthenticated, asyncHandler(saveRepository));
-router.delete('/*', ensureAuthenticated, asyncHandler(unsaveRepository));
+router.delete('/:repoId', ensureAuthenticated, asyncHandler(unsaveRepository));
 router.get('/', ensureAuthenticated, asyncHandler(getSavedRepos));
 
 export default router;

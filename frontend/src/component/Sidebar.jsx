@@ -9,18 +9,36 @@ import { PiSignInBold } from "react-icons/pi";
 import { MdEditDocument } from 'react-icons/md';
 import { AiOutlineSave } from "react-icons/ai"; // New icon for Saved
 import { useAuthContext } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+import { FaMoon, FaSun } from "react-icons/fa";
 
-const Sidebar = () => { 
+const Sidebar = () => {
   const { authUser } = useAuthContext(); // Get authUser from context
+  const { theme, toggleTheme } = useTheme();
 
+  // Reorganized by importance/priority (most important first)
   const navItems = [
-    { path: '/', icon: <IoHomeSharp size={22} />, label: 'Home', visible: true },
-    { path: '/likes', icon: <FaHeart size={22} />, label: 'Likes', visible: !!authUser },
-    { path: '/explore', icon: <MdOutlineExplore size={22} />, label: 'Explore', visible: !!authUser },
-    { path: '/saved', icon: <AiOutlineSave size={22} />, label: 'Saved', visible: !!authUser }, // Added Saved
-    { path: '/analytics', icon: <FaSave size={22} />, label: 'Analytics', visible: !!authUser }, // Unique Analytics button icon
-    { path: '/login', icon: <PiSignInBold size={22} />, label: 'Login', visible: !authUser },
-    { path: '/signup', icon: <MdEditDocument size={22} />, label: 'Sign Up', visible: !authUser }
+    // Core navigation (always visible)
+    { path: '/', icon: <IoHomeSharp size={22} />, label: 'Home', visible: true, priority: 1 },
+
+    // Primary authenticated features (high priority)
+    { path: '/explore', icon: <MdOutlineExplore size={22} />, label: 'Explore', visible: !!authUser, priority: 2 },
+    { path: '/trends', icon: '📈', label: 'Trends', visible: !!authUser, priority: 3 },
+
+    // Social features (medium priority)
+    { path: '/likes', icon: <FaHeart size={22} />, label: 'Likes', visible: !!authUser, priority: 4 },
+    { path: '/saved', icon: <AiOutlineSave size={22} />, label: 'Saved', visible: !!authUser, priority: 5 },
+
+    // Creative features (medium priority)
+    { path: '/contribution-art', icon: '🎨', label: 'Art Generator', visible: !!authUser, priority: 6 },
+
+    // Analytics & achievements (lower priority)
+    { path: '/analytics', icon: <FaSave size={22} />, label: 'Analytics', visible: !!authUser, priority: 7 },
+    { path: '/achievements', icon: '🏆', label: 'Achievements', visible: !!authUser, priority: 8 },
+
+    // Authentication (lowest priority, only when not logged in)
+    { path: '/login', icon: <PiSignInBold size={22} />, label: 'Login', visible: !authUser, priority: 9 },
+    { path: '/signup', icon: <MdEditDocument size={22} />, label: 'Sign Up', visible: !authUser, priority: 10 }
   ];
 
   return (
@@ -73,14 +91,23 @@ const Sidebar = () => {
             </Link>
           ))}
 
-        {authUser && (
-          <div className="flex flex-col mt-auto gap-2">
+        <div className="flex flex-col mt-auto gap-2">
+          <button
+            onClick={toggleTheme}
+            className="p-1.5 flex justify-center transition-colors duration-200 rounded-lg
+                   hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            aria-label="Toggle theme"
+          >
+            {theme === "light" ? <FaMoon size={22} /> : <FaSun size={22} />}
+            <span className="sr-only">Toggle theme</span>
+          </button>
+          {authUser && (
             <Logout
               className="focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:rounded-lg"
               aria-label="Logout"
             />
-          </div>
-        )}
+          )}
+        </div>
       </nav>
     </aside>
   );

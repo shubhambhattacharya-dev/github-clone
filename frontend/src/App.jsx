@@ -8,6 +8,9 @@ import ExplorePage from "./pages/ExplorePage.jsx";
 import LikesPage from "./pages/LikesPage.jsx";
 import AnalyticsDashboard from "./pages/AnalyticsDashboard.jsx";
 import SavedPage from "./pages/SavedPage.jsx";
+import AchievementsPage from "./pages/AchievementsPage.jsx";
+import ContributionArtPage from "./pages/ContributionArtPage.jsx";
+import TrendsPage from "./pages/TrendsPage.jsx";
 
 import Sidebar from "./component/Sidebar.jsx";
 import { useAuthContext } from "./context/AuthContext.jsx";
@@ -33,6 +36,9 @@ function App() {
           <Route path="/analytics/:owner/:repo" element={authUser ? <AnalyticsDashboard /> : <Navigate to="/login" />} />
           <Route path="/analytics" element={<Navigate to="/analytics/shubhambhattacharya-dev/Hybrid" replace />} />
           <Route path="/saved" element={authUser ? <SavedPage /> : <Navigate to="/login" />} />
+          <Route path="/achievements" element={authUser ? <AchievementsPage /> : <Navigate to="/login" />} />
+          <Route path="/contribution-art" element={authUser ? <ContributionArtPage /> : <Navigate to="/login" />} />
+          <Route path="/trends" element={authUser ? <TrendsPage /> : <Navigate to="/login" />} />
         </Routes>
         <Toaster position="top-right" />
       </div>
