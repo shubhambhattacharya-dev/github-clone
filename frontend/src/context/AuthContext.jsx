@@ -12,6 +12,25 @@ export const AuthContextProvider = ({ children }) => {
 	const [authUser, setAuthUser] = useState(null);
 	const [loading, setLoading] = useState(true);
 
+	const logout = async () => {
+		try {
+			const res = await fetch("/api/auth/logout", {
+				method: "GET",
+				credentials: "include"
+			});
+			const data = await res.json();
+
+			if (!res.ok) {
+				throw new Error(data?.message || "Failed to logout");
+			}
+
+			setAuthUser(null);
+			toast.success("Logged out successfully");
+		} catch (error) {
+			toast.error(error?.message || "Logout failed");
+		}
+	};
+
 	useEffect(() => {
 		const checkUserLoggedIn = async () => {
 			try {
@@ -35,7 +54,7 @@ export const AuthContextProvider = ({ children }) => {
 	}, []);
 
 	return (
-		<AuthContext.Provider value={{ authUser, setAuthUser, loading }}>
+		<AuthContext.Provider value={{ authUser, setAuthUser, loading, logout }}>
 			{children}
 		</AuthContext.Provider>
 	);

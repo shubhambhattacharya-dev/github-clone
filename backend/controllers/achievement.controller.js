@@ -1,276 +1,200 @@
 import Achievement from "../models/achievement.model.js";
 import User from "../models/user.model.js";
 
-// Predefined achievements
-const ACHIEVEMENTS = [
-  {
-    id: "first_login",
-    name: "Welcome Aboard!",
-    description: "Logged in for the first time",
-    icon: "🎉",
-    category: "special",
-    rarity: "common",
-    requirements: { type: "login_count", value: 1, condition: "gte" },
-    points: 5
-  },
-  {
-    id: "repo_collector",
-    name: "Repository Collector",
-    description: "Saved 5 repositories",
-    icon: "📚",
-    category: "exploration",
-    rarity: "common",
-    requirements: { type: "repos_saved", value: 5, condition: "gte" },
-    points: 15
-  },
-  {
-    id: "social_butterfly",
-    name: "Social Butterfly",
-    description: "Liked 10 profiles",
-    icon: "🦋",
-    category: "social",
-    rarity: "rare",
-    requirements: { type: "likes_given", value: 10, condition: "gte" },
-    points: 25
-  },
-  {
-    id: "popular_user",
-    name: "Popular User",
-    description: "Received 5 likes on your profile",
-    icon: "⭐",
-    category: "social",
-    rarity: "rare",
-    requirements: { type: "likes_received", value: 5, condition: "gte" },
-    points: 30
-  },
-  {
-    id: "star_collector",
-    name: "Star Collector",
-    description: "Saved repositories with 100+ total stars",
-    icon: "🌟",
-    category: "exploration",
-    rarity: "epic",
-    requirements: { type: "stars_earned", value: 100, condition: "gte" },
-    points: 50
-  }
-];
-
-// Initialize achievements in database
-export const initializeAchievements = async () => {
-  try {
-    console.log("Initializing achievements...");
-    for (const ach of ACHIEVEMENTS) {
-      await Achievement.findOneAndUpdate(
-        { id: ach.id },
-        ach,
-        { upsert: true, new: true }
-      );
-    }
-    console.log("Achievements initialized successfully!");
-  } catch (error) {
-    console.error("Error initializing achievements:", error);
-  }
-};
-
-// Check and award achievements
-export const checkAndAwardAchievements = async (userId, actionType) => {
-  // For 'check_all' action, check all achievement types
-  if (actionType === 'check_all') {
-    const user = await User.findById(userId);
-    if (!user) return [];
-
-    const unlockedAchievements = [];
-    const allAchievements = await Achievement.find({ isActive: true });
-
-    for (const achievement of allAchievements) {
-      // Skip if already unlocked
-      if (user.achievements.some(a => a.achievementId === achievement.id)) continue;
-
-      let qualifies = false;
-      const req = achievement.requirements;
-
-      // Check all types of achievements
-      switch (req.type) {
-        case "login_count":
-          qualifies = (user.loginCount || 0) >= req.value;
-          break;
-        case "repos_saved":
-          qualifies = user.savedRepos.length >= req.value;
-          break;
-        case "likes_given":
-          qualifies = user.likes?.length >= req.value || false;
-          break;
-        case "likes_received":
-          qualifies = user.likedBy?.length >= req.value || false;
-          break;
-        case "stars_earned":
-          const totalStars = user.savedRepos.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0);
-          qualifies = totalStars >= req.value;
-          break;
-        default:
-          qualifies = false;
-      }
-
-      if (qualifies) {
-        user.achievements.push({
-          achievementId: achievement.id,
-          unlockedAt: new Date()
-        });
-        user.totalPoints += achievement.points;
-        user.achievementStats.totalUnlocked += 1;
-
-        unlockedAchievements.push(achievement);
-        console.log(`Awarded achievement: ${achievement.name} to user ${userId}`);
-      }
-    }
-
-    if (unlockedAchievements.length > 0) {
-      await user.save();
-    }
-
-    return unlockedAchievements;
-  }
-
-  // Original logic for specific action types
-  try {
-    const user = await User.findById(userId);
-    if (!user) return [];
-
-    const unlockedAchievements = [];
-    const allAchievements = await Achievement.find({ isActive: true });
-
-    for (const achievement of allAchievements) {
-      // Skip if already unlocked
-      if (user.achievements.some(a => a.achievementId === achievement.id)) continue;
-
-      let qualifies = false;
-      const req = achievement.requirements;
-
-      switch (req.type) {
-        case "login_count":
-          qualifies = user.loginCount >= req.value;
-          break;
-        case "repos_saved":
-          qualifies = user.savedRepos.length >= req.value;
-          break;
-        case "likes_given":
-          qualifies = user.likes.length >= req.value; // Assuming likes is the array of liked users
-          break;
-        case "likes_received":
-          qualifies = user.likes.length >= req.value; // This might need adjustment based on your like system
-          break;
-        case "stars_earned":
-          const totalStars = user.savedRepos.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0);
-          qualifies = totalStars >= req.value;
-          break;
-        default:
-          qualifies = false;
-      }
-
-      if (qualifies) {
-        user.achievements.push({
-          achievementId: achievement.id,
-          unlockedAt: new Date()
-        });
-        user.totalPoints += achievement.points;
-        user.achievementStats.totalUnlocked += 1;
-
-        unlockedAchievements.push(achievement);
-        console.log(`Awarded achievement: ${achievement.name} to user ${userId}`);
-      }
-    }
-
-    if (unlockedAchievements.length > 0) {
-      await user.save();
-    }
-
-    return unlockedAchievements;
-  } catch (error) {
-    console.error("Error checking achievements:", error);
-    return [];
-  }
-};
-
-// Check and award all achievements for a user (useful for retroactive checking)
-export const checkAllUserAchievements = async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id);
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    const unlockedAchievements = await checkAndAwardAchievements(user._id, 'check_all');
-
-    res.json({
-      success: true,
-      message: `${unlockedAchievements.length} achievements checked/awarded`,
-      unlockedAchievements: unlockedAchievements.map(a => ({
-        name: a.name,
-        icon: a.icon,
-        description: a.description
-      }))
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
 // Get user achievements with progress
 export const getUserAchievements = async (req, res) => {
   try {
+    // Set Content-Type header explicitly
+    res.setHeader('Content-Type', 'application/json');
+
     const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found"
+      });
+    }
+
+    // Get all active achievements
     const allAchievements = await Achievement.find({ isActive: true });
 
-    const achievementsWithProgress = allAchievements.map(ach => {
-      const userAch = user.achievements.find(a => a.achievementId === ach.id);
+    // Calculate progress for each achievement
+    const achievementsWithProgress = allAchievements.map(achievement => {
+      const userAchievement = user.achievements?.find(
+        ua => ua.achievementId === achievement.id
+      );
 
-      if (userAch) {
-        return {
-          ...ach.toObject(),
-          unlocked: true,
-          unlockedAt: userAch.unlockedAt
-        };
-      } else {
-        let currentProgress = 0;
-        const req = ach.requirements;
+      let progress = 0;
+      let requiredValue = achievement.requirements.value;
+      let progressPercent = 0;
+      let unlocked = !!userAchievement;
+      let unlockedAt = userAchievement?.unlockedAt;
 
-        switch (req.type) {
-          case "repos_saved":
-            currentProgress = user.savedRepos?.length || 0;
-            break;
-          case "likes_given":
-            currentProgress = user.likes?.length || 0;
-            break;
-          case "likes_received":
-            currentProgress = user.likes?.length || 0; // Adjust based on your system
-            break;
-          case "login_count":
-            currentProgress = user.loginCount || 0;
-            break;
-          case "stars_earned":
-            currentProgress = user.savedRepos?.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0) || 0;
-            break;
-          default:
-            currentProgress = 0;
-        }
-
-        return {
-          ...ach.toObject(),
-          unlocked: false,
-          progress: currentProgress,
-          progressPercent: Math.min((currentProgress / req.value) * 100, 100),
-          requiredValue: req.value
-        };
+      // Calculate progress based on requirement type
+      switch (achievement.requirements.type) {
+        case 'login_count':
+          progress = user.loginCount || 0;
+          break;
+        case 'repos_saved':
+          progress = user.savedRepos?.length || 0;
+          break;
+        case 'likes_given':
+          // Count how many profiles this user has liked
+          progress = 0; // This would need a separate query
+          break;
+        case 'likes_received':
+          progress = user.likes?.length || 0;
+          break;
+        case 'stars_earned':
+          // Calculate total stars from saved repos
+          progress = user.savedRepos?.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0) || 0;
+          break;
+        case 'puzzles_completed':
+          // This will be tracked separately and updated when puzzles are completed
+          progress = user.achievementStats?.puzzlesCompleted || 0;
+          break;
+        default:
+          progress = 0;
       }
+
+      // Calculate percentage
+      if (requiredValue > 0) {
+        progressPercent = Math.min(Math.round((progress / requiredValue) * 100), 100);
+      }
+
+      // Check if achievement should be unlocked
+      if (!unlocked && progress >= requiredValue) {
+        unlocked = true;
+        unlockedAt = new Date();
+        // Add to user's achievements (this would be done in a separate function)
+      }
+
+      return {
+        id: achievement.id,
+        name: achievement.name,
+        description: achievement.description,
+        icon: achievement.icon,
+        rarity: achievement.rarity,
+        points: achievement.points,
+        category: achievement.category,
+        unlocked,
+        unlockedAt,
+        progress,
+        requiredValue,
+        progressPercent
+      };
     });
+
+    // Calculate stats
+    const unlockedAchievements = achievementsWithProgress.filter(a => a.unlocked);
+    const totalPoints = unlockedAchievements.reduce((sum, a) => sum + a.points, 0);
+    const completionPercentage = allAchievements.length > 0
+      ? Math.round((unlockedAchievements.length / allAchievements.length) * 100)
+      : 0;
+
+    const stats = {
+      totalUnlocked: unlockedAchievements.length,
+      totalPoints,
+      completionPercentage
+    };
 
     res.json({
       success: true,
       achievements: achievementsWithProgress,
-      stats: user.achievementStats,
-      totalPoints: user.totalPoints
+      stats
     });
+
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error fetching achievements:', error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to load achievements"
+    });
+  }
+};
+
+// Check and award achievements (server-side validation)
+export const checkAchievements = async (req, res) => {
+  try {
+    // Set Content-Type header explicitly
+    res.setHeader('Content-Type', 'application/json');
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found"
+      });
+    }
+
+    const allAchievements = await Achievement.find({ isActive: true });
+    const newlyUnlocked = [];
+
+    for (const achievement of allAchievements) {
+      const alreadyUnlocked = user.achievements?.some(
+        ua => ua.achievementId === achievement.id
+      );
+
+      if (alreadyUnlocked) continue;
+
+      // Check if user meets requirements
+      let meetsRequirement = false;
+
+      switch (achievement.requirements.type) {
+        case 'login_count':
+          meetsRequirement = (user.loginCount || 0) >= achievement.requirements.value;
+          break;
+        case 'repos_saved':
+          meetsRequirement = (user.savedRepos?.length || 0) >= achievement.requirements.value;
+          break;
+        case 'likes_received':
+          meetsRequirement = (user.likes?.length || 0) >= achievement.requirements.value;
+          break;
+        case 'stars_earned':
+          const totalStars = user.savedRepos?.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0) || 0;
+          meetsRequirement = totalStars >= achievement.requirements.value;
+          break;
+        case 'puzzles_completed':
+          meetsRequirement = (user.achievementStats?.puzzlesCompleted || 0) >= achievement.requirements.value;
+          break;
+        // Add more requirement types as needed
+      }
+
+      if (meetsRequirement) {
+        user.achievements = user.achievements || [];
+        user.achievements.push({
+          achievementId: achievement.id,
+          unlockedAt: new Date()
+        });
+
+        user.totalPoints = (user.totalPoints || 0) + achievement.points;
+        newlyUnlocked.push({
+          id: achievement.id,
+          name: achievement.name,
+          icon: achievement.icon,
+          description: achievement.description,
+          points: achievement.points
+        });
+      }
+    }
+
+    if (newlyUnlocked.length > 0) {
+      await user.save();
+    }
+
+    res.json({
+      success: true,
+      newlyUnlocked,
+      message: newlyUnlocked.length > 0
+        ? `Unlocked ${newlyUnlocked.length} new achievement${newlyUnlocked.length > 1 ? 's' : ''}!`
+        : "No new achievements unlocked"
+    });
+
+  } catch (error) {
+    console.error('Error checking achievements:', error);
+    res.status(500).json({
+      success: false,
+      error: "Failed to check achievements"
+    });
   }
 };

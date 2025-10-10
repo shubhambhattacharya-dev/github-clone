@@ -10,13 +10,12 @@
     "preview": "npx vite preview"
   },
   "dependencies": {
-    "mern-github-yt": "file:..",
+    "lucide-react": "^0.263.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
-    "react-router-dom": "^7.2.0",
-    "react-toastify": "^11.0.3",
+    "react-router-dom": "^6.22.3",
     "recharts": "^3.2.1"
   },
   "devDependencies": {
@@ -32,7 +31,6 @@
     "globals": "^15.14.0",
     "postcss": "^8.5.2",
     "react-router": "^6.22.3",
-    "react-router-dom": "^6.22.3",
     "tailwindcss": "^3.4.17",
     "vite": "^5.0.0"
   }

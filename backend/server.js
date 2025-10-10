@@ -20,12 +20,13 @@ import authRoutes from "./routes/auth.route.js";
 import analyticsRoutes from "./routes/analytics.route.js";
 import likeRoutes from "./routes/like.route.js";
 import savedRoutes from "./routes/saved.route.js";
+import starRoutes from "./routes/star.route.js";
 import achievementRoutes from "./routes/achievement.route.js";
-import contributionArtRoutes from "./routes/contributionArt.route.js";
+import achievementDevRoutes from "./routes/achievements-dev.route.js";
 import hackathonRoutes from "./routes/hackathon.route.js";
+import contributionArtRoutes from "./routes/contributionArt.route.js";
 
 import connectMongoDB from "./db/connectMongoDB.js";
-import { initializeAchievements } from "./controllers/achievement.controller.js";
 
 // -------------------- Initialize App -------------------- //
 const app = express();
@@ -40,11 +41,19 @@ if (!process.env.SESSION_SECRET) {
   process.exit(1); // prevent server from starting with insecure secret
 }
 
-// Parse JSON
-app.use(express.json());
+// Parse JSON with increased limit for image uploads
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// Enable CORS
-app.use(cors());
+// Enable CORS with security restrictions
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production'
+    ? process.env.FRONTEND_URL || false // Allow specific origin in production
+    : true, // Allow all in development
+  credentials: true, // Allow cookies
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Helmet for security headers
 app.use(helmet());
@@ -68,11 +77,17 @@ app.use((req, res, next) => {
   next();
 });
 
-// Use SESSION_SECRET from .env
-app.use(session({ 
-  secret: process.env.SESSION_SECRET, 
-  resave: false, 
-  saveUninitialized: false 
+// Use SESSION_SECRET from .env with enhanced security
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+    httpOnly: true, // Prevent XSS attacks
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: 'strict' // CSRF protection
+  }
 }));
 
 // Initialize Passport and session
@@ -86,16 +101,24 @@ app.use("/api/explore", exploreRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/likes", likeRoutes);
 app.use("/api/saved", savedRoutes);
+app.use("/api/starred", starRoutes);
 app.use("/api/achievements", achievementRoutes);
-app.use("/api/contribution-art", contributionArtRoutes);
+app.use("/api/achievements", achievementDevRoutes); // Development route
 app.use("/api/hackathons", hackathonRoutes);
+app.use("/api/contribution-art", contributionArtRoutes);
 
 // -------------------- Global Error Handler -------------------- //
 app.use(globalErrorHandler);
 
 // -------------------- Serve Frontend -------------------- //
 app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+// Catch-all handler for SPA - but NOT for API routes
 app.get("*", (req, res) => {
+  // Don't serve index.html for API routes
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'API endpoint not found' });
+  }
   res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
 });
 
@@ -103,7 +126,6 @@ app.get("*", (req, res) => {
 const server = app.listen(PORT, async () => {
   console.log(`Server running at http://localhost:${PORT}`);
   await connectMongoDB();
-  await initializeAchievements();
 });
 
 server.on('error', (err) => {

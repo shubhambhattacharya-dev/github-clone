@@ -1,5 +1,4 @@
 import User from '../models/user.model.js';
-import { checkAndAwardAchievements } from './achievement.controller.js';
 
 // Centralized error formatting for saved repos
 const handleSavedError = (error) => {
@@ -63,7 +62,7 @@ export const saveRepository = async (req, res, next) => {
     const userId = req.user && (req.user.id || req.user._id);
     const { repo } = req.body; // Full repo object from frontend
 
-    if (!repo || !repo.full_name) {
+    if (!repo || (!repo.full_name && (!repo.name || !repo.owner?.login))) {
       const error = new Error("Repository data required");
       error.statusCode = 400;
       throw error;
@@ -82,7 +81,15 @@ export const saveRepository = async (req, res, next) => {
       throw error;
     }
 
-    const alreadySaved = user.savedRepos.some(saved => saved.id === repo.id);
+    // Ensure savedRepos is an array
+    if (!user.savedRepos) {
+      user.savedRepos = [];
+    }
+
+    // Use repo data from frontend instead of fetching from GitHub
+    const fullName = repo.full_name || `${repo.owner?.login}/${repo.name}`;
+
+    const alreadySaved = user.savedRepos.some(saved => saved.repoId === fullName);
     if (alreadySaved) {
       return res.json({
         success: true,
@@ -90,16 +97,14 @@ export const saveRepository = async (req, res, next) => {
         data: user.savedRepos
       });
     }
-
-    // Use repo data from frontend instead of fetching from GitHub
     const repoObject = {
-      repoId: repo.full_name, // For backward compatibility
-      id: repo.id,
-      name: repo.name,
-      full_name: repo.full_name,
-      html_url: repo.html_url,
-      description: repo.description,
-      language: repo.language,
+      repoId: fullName,
+      id: repo.id || 0,
+      name: repo.name || '',
+      full_name: fullName,
+      html_url: repo.html_url || '',
+      description: repo.description || '',
+      language: repo.language || '',
       stargazers_count: repo.stargazers_count || 0,
       forks_count: repo.forks_count || 0,
       owner: {
@@ -110,20 +115,25 @@ export const saveRepository = async (req, res, next) => {
     };
 
     user.savedRepos.push(repoObject);
-    await user.save();
+    try {
+      await user.save();
+    } catch (saveError) {
+      console.error('Error saving user:', saveError);
+      throw new Error('Failed to save repository to database');
+    }
 
-    // Check for achievements
-    const unlockedAchievements = await checkAndAwardAchievements(user._id, 'repo_saved');
+    // TODO: Check for achievements
+    // const unlockedAchievements = await checkAndAwardAchievements(user._id, 'repo_saved');
 
     return res.json({
       success: true,
       message: 'Repository saved successfully',
       data: user.savedRepos,
-      unlockedAchievements: unlockedAchievements.map(a => ({
-        name: a.name,
-        icon: a.icon,
-        description: a.description
-      }))
+      // unlockedAchievements: unlockedAchievements.map(a => ({
+      //   name: a.name,
+      //   icon: a.icon,
+      //   description: a.description
+      // }))
     });
   } catch (error) {
     next(handleSavedError(error));
@@ -134,7 +144,7 @@ export const saveRepository = async (req, res, next) => {
 export const unsaveRepository = async (req, res, next) => {
   try {
     const userId = req.user && (req.user.id || req.user._id);
-    const { repoId } = req.params; // repo ID number
+    const { repoId } = req.params; // repo full name
 
     if (!userId) {
       const error = new Error('Not authenticated');
@@ -150,7 +160,7 @@ export const unsaveRepository = async (req, res, next) => {
 
     const user = await User.findByIdAndUpdate(
       userId,
-      { $pull: { savedRepos: { id: parseInt(repoId) } } },
+      { $pull: { savedRepos: { repoId: repoId } } },
       { new: true }
     );
 
@@ -187,6 +197,11 @@ export const getSavedRepos = async (req, res, next) => {
       const error = new Error('User not found');
       error.statusCode = 404;
       throw error;
+    }
+
+    // Ensure savedRepos is an array
+    if (!user.savedRepos) {
+      user.savedRepos = [];
     }
 
     // Apply pagination manually on populated array

@@ -38,7 +38,7 @@ const SavedPage = () => {
 
     try {
       setRemovingId(repoId);
-      
+
       // Use toast.promise for better UX
       await toast.promise(
         removeSavedRepo(repoId),
@@ -58,7 +58,7 @@ const SavedPage = () => {
       );
 
       // Optimistic update - remove from state immediately
-      setRepos(prev => prev.filter(repo => (repo.repoId || repo._id) !== repoId));
+      setRepos(prev => prev.filter(repo => (repo.full_name || repo.repoId) !== repoId));
       
     } catch (err) {
       console.error('Remove saved repo error:', err);
@@ -135,22 +135,22 @@ const SavedPage = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
-          {repos.map(repo => (
-            <div 
-              key={repo.repoId || repo._id} 
+          {repos.map((repo, index) => (
+            <div
+              key={`${repo.full_name || repo.repoId}-${index}`}
               className="relative bg-gray-800 rounded-lg p-4 hover:bg-gray-750 transition-colors"
             >
-              <Repo repo={repo} />
+              <Repo repo={repo} showSaveButton={false} />
               <button
-                onClick={() => handleRemove(repo.repoId || repo._id, repo.name || 'Repository')}
-                disabled={removingId === (repo.repoId || repo._id)}
+                onClick={() => handleRemove(repo.full_name || repo.repoId, repo.name || 'Repository')}
+                disabled={removingId === (repo.full_name || repo.repoId)}
                 className={`absolute right-4 top-4 px-3 py-1 text-sm rounded transition-colors ${
-                  removingId === (repo.repoId || repo._id) 
-                    ? 'bg-gray-600 text-gray-400 cursor-not-allowed' 
+                  removingId === (repo.full_name || repo.repoId)
+                    ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
                     : 'bg-red-600 text-white hover:bg-red-700'
                 }`}
               >
-                {removingId === (repo.repoId || repo._id) ? 'Removing...' : 'Remove'}
+                {removingId === (repo.full_name || repo.repoId) ? 'Removing...' : 'Remove'}
               </button>
             </div>
           ))}

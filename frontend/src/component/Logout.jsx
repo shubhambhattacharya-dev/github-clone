@@ -1,33 +1,23 @@
-import { MdLogout } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
-import { toast } from "react-hot-toast";
-// TODO Implement Logout functionality
 
 const Logout = () => {
-	const { authUser, setAuthUser } = useAuthContext();
+  const { logout } = useAuthContext();
+  const navigate = useNavigate();
 
-	const handleLogout = async () => {
-		try {
-			const res = await fetch("/api/auth/logout", { credentials: "include" });
-			const data = await res.json();
-			setAuthUser(null);
-		} catch (error) {
-			toast.error(error.message);
-		}
-	};
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
-	return (
-		<>
-			<img src={authUser?.avatarUrl} className='w-10 h-10 rounded-full border border-gray-800' />
-
-			<div
-				className='cursor-pointer flex items-center p-2 rounded-lg bg-glass mt-auto border border-gray-800'
-				onClick={handleLogout}
-			>
-				<MdLogout size={22} />
-			</div>
-		</>
-	);
+  return (
+    <button
+      onClick={handleLogout}
+      className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+    >
+      Logout
+    </button>
+  );
 };
 
 export default Logout;

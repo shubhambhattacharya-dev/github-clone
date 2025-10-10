@@ -1,0 +1,23 @@
+@startuml DFD_Level_0
+top to bottom direction
+
+skinparam backgroundColor #FEFEFE
+skinparam actorBackgroundColor #FFF3E0
+skinparam actorBorderColor #E65100
+skinparam actorFontColor #000000
+skinparam databaseBackgroundColor #F3E5F5
+skinparam databaseBorderColor #7B1FA2
+skinparam databaseFontColor #000000
+
+actor "User" as User
+actor "GitHub API" as API
+() "GitHub Clone System" as System
+database "MongoDB Database" as DB
+
+User --> System : Authentication Request, Explore Repositories, View Analytics, Manage Likes/Saved/Starred, Achievements, Contribution Art, Hackathons
+System --> API : OAuth Authentication, Fetch Repository Data, Fetch User Data, Fetch Contribution Data
+API --> System : User Tokens/Data, Repository Information, Contribution Statistics
+System --> DB : Store User Profiles, Cache Repository Data, Store Analytics, Save User Preferences, Store Achievements
+DB --> System : Retrieve User Data, Retrieve Cached Data, Retrieve Analytics, Retrieve Preferences
+System --> User : Display Repositories, Show Analytics Dashboard, Achievement Notifications, Contribution Art, Hackathon Info
+@enduml

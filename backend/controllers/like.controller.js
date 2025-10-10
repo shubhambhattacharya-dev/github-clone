@@ -1,5 +1,4 @@
 import User from '../models/user.model.js';
-import { checkAndAwardAchievements } from './achievement.controller.js';
 
 // Centralized error formatting for likes
 const handleLikeError = (error) => {

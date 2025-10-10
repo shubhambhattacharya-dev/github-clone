@@ -26,23 +26,14 @@ const userSchema = new mongoose.Schema(
     },
 
     // NEW: For saved.controller.js to work
-    savedRepos: [
-      {
-        repoId: { type: String, required: true },
-        name: { type: String },
-        description: { type: String },
-        html_url: { type: String },
-        clone_url: { type: String },
-        stargazers_count: { type: Number },
-        forks_count: { type: Number },
-        language: { type: String },
-        created_at: { type: String },
-        owner: {
-          login: { type: String },
-          avatar_url: { type: String },
-        }
-      }
-    ],
+    savedRepos: [{
+      type: mongoose.Schema.Types.Mixed
+    }],
+
+    // NEW: For star.controller.js to work
+    starredRepos: [{
+      type: mongoose.Schema.Types.Mixed
+    }],
 
     // NEW: Achievement system
     achievements: [{

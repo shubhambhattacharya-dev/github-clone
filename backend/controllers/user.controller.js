@@ -30,7 +30,7 @@ export const getUserProfileAndRepos = async (req, res) => {
 	}
 };
 
-export const getLikes = async (req, res) => {
+export const getUserLikes = async (req, res) => {
 	try {
 		const userId = req.user && (req.user._id || req.user.id);
 		if (!userId) {
@@ -42,7 +42,7 @@ export const getLikes = async (req, res) => {
 			return res.status(404).json({ error: 'User not found' });
 		}
 
-		res.json({ likedBy: user.likedBy });
+		res.json({ likedBy: user.likes });
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}

@@ -7,6 +7,7 @@ import Search from "../component/Search";
 import SortRepos from "../component/SortRepos";
 import Spinner from "../component/Spinner";
 import { useAuthContext } from "../context/AuthContext";
+import { handleLoginWithGithub } from "../lib/function";
 
 const HomePage = () => {
 	const { authUser } = useAuthContext();
@@ -86,13 +87,40 @@ const HomePage = () => {
 
 	return (
 		<div className='m-4'>
-			<Search onSearch={onSearch} />
-			{repos.length > 0 && <SortRepos onSort={onSort} sortType={sortType} />}
-			<div className='flex gap-4 flex-col lg:flex-row justify-center items-start'>
-				{userProfile && !loading && <ProfileInfo userProfile={userProfile} />}
-				{!loading && <Repos repos={repos} />}
-				{loading && <Spinner />}
-			</div>
+			{authUser ? (
+				<>
+					<Search onSearch={onSearch} />
+					{repos.length > 0 && <SortRepos onSort={onSort} sortType={sortType} />}
+					<div className='flex gap-4 flex-col lg:flex-row justify-center items-start'>
+						{userProfile && !loading && <ProfileInfo userProfile={userProfile} />}
+						{!loading && <Repos repos={repos} />}
+						{loading && <Spinner />}
+					</div>
+				</>
+			) : (
+				<div className="min-h-screen flex items-center justify-center">
+					<div className="text-center">
+						<h1 className="text-4xl font-bold text-white mb-8">Welcome to GitHub Clone</h1>
+						<p className="text-gray-300 mb-8 max-w-md mx-auto">
+							Explore GitHub repositories, track your progress, and discover amazing projects.
+						</p>
+						<div className="flex gap-4 justify-center">
+							<button
+								onClick={handleLoginWithGithub}
+								className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+							>
+								Login with GitHub
+							</button>
+							<button
+								onClick={handleLoginWithGithub}
+								className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+							>
+								Sign Up
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

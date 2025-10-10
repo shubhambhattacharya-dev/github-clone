@@ -1,25 +1,32 @@
 const SortRepos = ({ onSort, sortType }) => {
-	const BUTTONS = [
-		{ type: "recent", text: "Most Recent" },
-		{ type: "stars", text: "Most Stars" },
-		{ type: "forks", text: "Most Forks" },
-	];
+  const sortOptions = [
+    { value: "recent", label: "Most Recent" },
+    { value: "stars", label: "Most Stars" },
+    { value: "forks", label: "Most Forks" },
+  ];
 
-	return (
-		<div className='mb-2 flex justify-center lg:justify-end'>
-			{BUTTONS.map((button) => (
-				<button
-					key={button.type}
-					type='button'
-					className={`py-2.5 px-5 me-2 mb-2 text-xs sm:text-sm font-medium focus:outline-none rounded-lg bg-glass ${
-						button.type == sortType ? "border-blue-500" : ""
-					}`}
-					onClick={() => onSort(button.type)}
-				>
-					{button.text}
-				</button>
-			))}
-		</div>
-	);
+  return (
+    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 mb-6">
+      <div className="flex items-center gap-4">
+        <span className="text-white font-medium">Sort by:</span>
+        <div className="flex gap-2">
+          {sortOptions.map((option) => (
+            <button
+              key={option.value}
+              onClick={() => onSort(option.value)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                sortType === option.value
+                  ? "bg-blue-600 text-white"
+                  : "bg-white/20 text-white hover:bg-white/30"
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 };
+
 export default SortRepos;

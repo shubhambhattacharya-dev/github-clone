@@ -1,137 +1,46 @@
-import { IoLocationOutline } from "react-icons/io5";
-import { RiGitRepositoryFill, RiUserFollowFill, RiUserFollowLine } from "react-icons/ri";
-import { FaXTwitter } from "react-icons/fa6";
-import { TfiThought } from "react-icons/tfi";
-import { FaEye } from "react-icons/fa";
-import { formatMemberSince } from "../utils/functions";
-import LikeProfile from "./LikeProfile";
-
 const ProfileInfo = ({ userProfile }) => {
-	// const userProfile = {
-	// 	avatar_url: "https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745",
-	// 	bio: "👨🏻‍💻👨🏻‍💻👨🏻‍💻",
-	// 	email: "johndoe@gmail.com",
-	// 	followers: 100,
-	// 	following: 200,
-	// 	html_url: "https://github.com/burakorkmez",
-	// 	location: "Somewhere, Earth",
-	// 	name: "John Doe",
-	// 	public_gists: 100,
-	// 	public_repos: 100,
-	// 	twitter_username: "johndoe",
-	// 	login: "johndoe",
-	// };
+  if (!userProfile) return null;
 
-	const memberSince = formatMemberSince(userProfile?.created_at);
+  return (
+    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+      <div className="text-center">
+        <img
+          src={userProfile.avatar_url}
+          alt={userProfile.name}
+          className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-white/20"
+        />
+        <h2 className="text-2xl font-bold text-white mb-2">{userProfile.name}</h2>
+        <p className="text-gray-300 mb-4">@{userProfile.login}</p>
+        <p className="text-white mb-4">{userProfile.bio}</p>
 
-	return (
-		<div className='lg:w-1/3 w-full flex flex-col gap-2 lg:sticky md:top-10'>
-			<div className='bg-glass rounded-lg p-4'>
-				<div className='flex gap-3 items-center'>
-					{/* User Avatar */}
-					<a href={userProfile?.html_url} target='_blank' rel='noreferrer'>
-						<img src={userProfile?.avatar_url} className='rounded-md w-24 h-24 mb-2' alt='' />
-					</a>
-					{/* View on Github */}
+        <div className="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <div className="text-2xl font-bold text-white">{userProfile.public_repos}</div>
+            <div className="text-gray-300 text-sm">Repos</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-white">{userProfile.followers}</div>
+            <div className="text-gray-300 text-sm">Followers</div>
+          </div>
+          <div>
+            <div className="text-2xl font-bold text-white">{userProfile.following}</div>
+            <div className="text-gray-300 text-sm">Following</div>
+          </div>
+        </div>
 
-					<div className='flex gap-2 items-center flex-col'>
-						<LikeProfile userProfile={userProfile} />
-						<a
-							href={userProfile?.html_url}
-							target='_blank'
-							rel='noreferrer'
-							className='bg-glass font-medium w-full text-xs p-2 rounded-md cursor-pointer border border-blue-400 flex items-center gap-2'
-						>
-							<FaEye size={16} />
-							View on Github
-						</a>
-					</div>
-				</div>
-
-				{/* User Bio */}
-				{userProfile?.bio ? (
-					<div className='flex items-center gap-2'>
-						<TfiThought />
-						<p className='text-sm'>{userProfile?.bio.substring(0, 60)}...</p>
-					</div>
-				) : null}
-
-				{/* Location */}
-				{userProfile?.location ? (
-					<div className='flex items-center gap-2'>
-						<IoLocationOutline />
-						{userProfile?.location}
-					</div>
-				) : null}
-
-				{/* Twitter Username */}
-				{userProfile?.twitter_username ? (
-					<a
-						href={`https://twitter.com/${userProfile.twitter_username}`}
-						target='_blank'
-						rel='noreferrer'
-						className='flex items-center gap-2 hover:text-sky-500'
-					>
-						<FaXTwitter />
-						{userProfile?.twitter_username}
-					</a>
-				) : null}
-
-				{/* Member Since Date */}
-				<div className='my-2'>
-					<p className='text-gray-600 font-bold text-sm'>Member since</p>
-					<p className=''>{memberSince}</p>
-				</div>
-
-				{/* Email Address */}
-				{userProfile?.email && (
-					<div className='my-2'>
-						<p className='text-gray-600 font-bold text-sm'>Email address</p>
-						<p className=''>{userProfile.email}</p>
-					</div>
-				)}
-
-				{/* Full Name */}
-				{userProfile?.name && (
-					<div className='my-2'>
-						<p className='text-gray-600 font-bold text-sm'>Full name</p>
-						<p className=''>{userProfile?.name}</p>
-					</div>
-				)}
-
-				{/* Username */}
-				<div className='my-2'>
-					<p className='text-gray-600 font-bold text-sm'>Username</p>
-					<p className=''>{userProfile?.login}</p>
-				</div>
-			</div>
-
-			<div className='flex flex-wrap gap-2 mx-4'>
-				{/* Followers Count */}
-				<div className='flex items-center gap-2 bg-glass rounded-lg p-2 flex-1 min-w-24'>
-					<RiUserFollowFill className='w-5 h-5 text-blue-800' />
-					<p className='text-xs'>Followers: {userProfile?.followers}</p>
-				</div>
-
-				{/* Following count */}
-				<div className='flex items-center gap-2 bg-glass rounded-lg p-2 flex-1 min-w-24'>
-					<RiUserFollowLine className='w-5 h-5 text-blue-800' />
-					<p className='text-xs'>Following: {userProfile?.following}</p>
-				</div>
-
-				{/* Number of public repos */}
-				<div className='flex items-center gap-2 bg-glass rounded-lg p-2 flex-1 min-w-24'>
-					<RiGitRepositoryFill className='w-5 h-5 text-blue-800' />
-					<p className='text-xs'>Public repos: {userProfile?.public_repos}</p>
-				</div>
-
-				{/* Number of public gists */}
-				<div className='flex items-center gap-2 bg-glass rounded-lg p-2 flex-1 min-w-24'>
-					<RiGitRepositoryFill className='w-5 h-5 text-blue-800' />
-					<p className='text-xs'>Public gists: {userProfile?.public_gists}</p>
-				</div>
-			</div>
-		</div>
-	);
+        <div className="mt-4">
+          <a
+            href={userProfile.html_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            View on GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+  );
 };
+
 export default ProfileInfo;
