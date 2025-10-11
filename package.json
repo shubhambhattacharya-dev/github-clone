@@ -15,6 +15,9 @@
 		"hackathons:help": "node fetchHackathons.js --help"
 	},
 	"type": "module",
+	"engines": {
+		"node": "20"
+	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
