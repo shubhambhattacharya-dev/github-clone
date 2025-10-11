@@ -9,9 +9,9 @@ router.get("/github", passport.authenticate("github", { scope: ["user:email"] })
 // GitHub callback route
 router.get(
 	"/github/callback",
-	passport.authenticate("github", { failureRedirect: process.env.CLIENT_BASE_URL + "/login" }),
+	passport.authenticate("github", { failureRedirect: "/login" }),
 	(req, res) => {
-		res.redirect(process.env.CLIENT_BASE_URL);
+		res.redirect(`${req.protocol}://${req.get('host')}`);
 	}
 );
 

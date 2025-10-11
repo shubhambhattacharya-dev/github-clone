@@ -55,8 +55,15 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Helmet for security headers
-app.use(helmet());
+// Helmet for security headers with CSP allowing external images
+app.use(helmet({
+	contentSecurityPolicy: {
+		directives: {
+			defaultSrc: ["'self'"],
+			imgSrc: ["'self'", "data:", "https:"],
+		},
+	},
+}));
 
 // Rate limiting for all API endpoints
 const apiLimiter = rateLimit({
@@ -111,7 +118,7 @@ app.use("/api/contribution-art", contributionArtRoutes);
 app.use(globalErrorHandler);
 
 // -------------------- Serve Frontend -------------------- //
-app.use(express.static(path.join(__dirname, "/frontend/dist")));
+app.use(express.static(path.join(__dirname, "frontend", "dist")));
 
 // Catch-all handler for SPA - but NOT for API routes
 app.get("*", (req, res) => {

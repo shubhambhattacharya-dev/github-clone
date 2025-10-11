@@ -5,8 +5,8 @@
 	"main": "server.js",
 	"scripts": {
 		"dev": "nodemon backend/server.js",
-		"build": "npm install && npm install --prefix frontend --production=false && npm run build --prefix frontend",
-		"start": "node backend/server.js",
+		"build": "npm install --prefix frontend --production=false --legacy-peer-deps && npm run build --prefix frontend",
+		"start": "npm run build && node backend/server.js",
 		"clean-install": "rm -rf node_modules frontend/node_modules && npm install && npm install --prefix frontend --production=false",
 		"art:create-samples": "node create-sample-art.js all",
 		"art:preview": "node contribution-art-example.js preview",
