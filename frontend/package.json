@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npx vite",
-    "build": "vite build --mode production",
+    "build": "npx vite build --mode production",
     "lint": "eslint .",
     "preview": "npx vite preview"
   },
