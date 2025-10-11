@@ -1,0 +1,1 @@
+import{u as o,j as t}from"./index-BDMXBHNM.js";import{R as a}from"./Repo-FiYEzRGL.js";const i=({repos:e})=>{const{authUser:r}=o();return t.jsx("div",{className:"space-y-4",children:e.map(s=>t.jsx(a,{repo:s},s.id))})};export{i as R};
