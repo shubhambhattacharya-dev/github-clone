@@ -83,7 +83,8 @@ const Repo = memo(({ repo, showSaveButton = true }) => {
             <button
               className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
               onClick={() => {
-                navigator.clipboard.writeText(`git clone ${repo.clone_url || repo.html_url}`);
+                const cloneUrl = `https://github.com/${repo.full_name}.git`;
+                navigator.clipboard.writeText(`git clone ${cloneUrl}`);
                 toast.success('Clone URL copied to clipboard!');
               }}
             >
