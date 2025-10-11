@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "nodemon backend/server.js",
 		"build": "echo 'Frontend already built and committed'",
-		"start": "npm run build && node backend/server.js",
+		"start": "node backend/server.js",
 		"clean-install": "rm -rf node_modules frontend/node_modules && npm install && npm install --prefix frontend --production=false",
 		"art:create-samples": "node create-sample-art.js all",
 		"art:preview": "node contribution-art-example.js preview",
