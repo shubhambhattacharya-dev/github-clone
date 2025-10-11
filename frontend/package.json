@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npx vite",
-    "build": "npm exec vite build --mode production",
+    "build": "node ./node_modules/vite/bin/vite.js build --mode production",
     "lint": "eslint .",
     "preview": "npx vite preview"
   },
