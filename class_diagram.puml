@@ -1,0 +1,156 @@
+@startuml Class Diagram
+
+class User {
+  - username: String
+  - name: String
+  - profileUrl: String
+  - avatarUrl: String
+  - likes: String[]
+  - savedRepos: Mixed[]
+  - starredRepos: Mixed[]
+  - achievements: Achievement[]
+  - totalPoints: Number
+  - achievementStats: Object
+  - loginCount: Number
+  + getUserProfileAndRepos()
+  + getUserLikes()
+}
+
+class Achievement {
+  - id: String
+  - name: String
+  - description: String
+  - icon: String
+  - rarity: String
+  - points: Number
+  - category: String
+  - requirements: Object
+  - isActive: Boolean
+  + getUserAchievements()
+  + checkAchievements()
+}
+
+class Puzzle {
+  - userId: String
+  - username: String
+  - targetImage: String
+  - repository: Object
+  - puzzleType: String
+  - imageName: String
+  - totalCommitsRequired: Number
+  - currentCommits: Number
+  - commitsPerDay: Number
+  - startDate: Date
+  - estimatedCompletionDate: Date
+  - isCompleted: Boolean
+  - completedAt: Date
+  - progressPercentage: Number
+  - lastUpdated: Date
+  + getContributions()
+  + saveArtConfig()
+  + getUserArtConfigs()
+  + createPuzzle()
+  + getUserPuzzles()
+  + extendPuzzleDeadline()
+  + updatePuzzleProgress()
+  + updatePuzzle()
+  + deletePuzzle()
+  + autoDetectCommits()
+}
+
+class ArtConfig {
+  - userId: String
+  - username: String
+  - config: Object
+  - svgData: String
+  - createdAt: Date
+}
+
+class AnalyticsCache {
+  - repoFullName: String
+  - contributors: Object[]
+  - commitActivity: Object[]
+  - codeFrequency: Object[]
+  - lastUpdated: Date
+  + getRepoAnalytics()
+}
+
+class GitHubService {
+  - baseURL: String
+  - token: String
+  + constructor()
+  + searchIssues(language, page, perPage)
+  + transformIssues(issues)
+  + calculateDifficulty(labels)
+}
+
+class UserController {
+  + getUserProfileAndRepos(req, res)
+  + getUserLikes(req, res)
+}
+
+class AchievementController {
+  + getUserAchievements(req, res)
+  + checkAchievements(req, res)
+}
+
+class AnalyticsController {
+  + getRepoAnalytics(req, res)
+}
+
+class ContributionArtController {
+  + getContributions(req, res)
+  + saveArtConfig(req, res)
+  + getUserArtConfigs(req, res)
+  + createPuzzle(req, res)
+  + getUserPuzzles(req, res)
+  + extendPuzzleDeadline(req, res)
+  + updatePuzzleProgress(req, res)
+  + updatePuzzle(req, res)
+  + deletePuzzle(req, res)
+  + autoDetectCommits(req, res)
+}
+
+class ExploreController {
+  + explorePopularRepos(req, res)
+  + searchRepos(req, res)
+  + getTrendingRepos(req, res)
+}
+
+class HackathonController {
+  + findHackathons(req, res)
+  + getHealth(req, res)
+}
+
+class LikeController {
+  + likeProfile(req, res)
+  + unlikeProfile(req, res)
+  + likeStatus(req, res)
+}
+
+class SavedController {
+  + saveRepository(req, res)
+  + unsaveRepository(req, res)
+  + getSavedRepos(req, res)
+}
+
+class StarController {
+  + starRepository(req, res)
+  + unstarRepository(req, res)
+  + getStarredRepos(req, res)
+}
+
+User "1" -- "*" Achievement : has
+User "1" -- "*" Puzzle : creates
+User "1" -- "*" ArtConfig : owns
+AnalyticsCache "1" -- "*" User : caches data for
+
+GitHubService ..> HackathonController : used by
+
+UserController ..> User : uses
+AchievementController ..> Achievement : uses
+AnalyticsController ..> AnalyticsCache : uses
+ContributionArtController ..> Puzzle : uses
+ContributionArtController ..> ArtConfig : uses
+
+@enduml
