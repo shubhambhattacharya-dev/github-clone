@@ -17,7 +17,7 @@ const Repo = memo(({ repo, showSaveButton = true }) => {
 
   const handleUnsave = async () => {
     try {
-      await removeSavedRepo(repo.id);
+      await removeSavedRepo(repo.full_name || `${repo.owner?.login}/${repo.name}`);
       toast.success('Repository removed from saved!');
     } catch (error) {
       toast.error(error.message || 'Failed to remove repository');

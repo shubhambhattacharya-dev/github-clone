@@ -29,7 +29,13 @@ const HomePage = () => {
 			const res = await fetch(`/api/users/profile/${username}`, {
 				credentials: "include" // <--- Send cookies for authenticated backend
 			});
-			const { repos, userProfile } = await res.json();
+			const data = await res.json();
+
+			if (!res.ok) {
+				throw new Error(data.error || 'Failed to fetch user data');
+			}
+
+			const { repos, userProfile } = data;
 
 			const sortedRepos = [...repos].sort(
 				(a, b) => new Date(b.created_at) - new Date(a.created_at)
@@ -40,10 +46,10 @@ const HomePage = () => {
 
 			return { userProfile, repos: sortedRepos };
 		} catch (error) {
-			toast.error(error?.message || "Failed to fetch user profile and repos"); // safe default
+			toast.error(error?.message || "Failed to fetch user profile and repos");
 			return { userProfile: null, repos: [] };
 		} finally {
-			setLoading(false); // stop loading
+			setLoading(false);
 		}
 	};
 

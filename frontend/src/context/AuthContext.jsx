@@ -27,7 +27,10 @@ export const AuthContextProvider = ({ children }) => {
 			setAuthUser(null);
 			toast.success("Logged out successfully");
 		} catch (error) {
+			console.error('Logout error:', error);
 			toast.error(error?.message || "Logout failed");
+			// Still clear user even if logout request fails
+			setAuthUser(null);
 		}
 	};
 
@@ -43,10 +46,10 @@ export const AuthContextProvider = ({ children }) => {
 
 				setAuthUser(data.user || null); // Set user or fallback to null
 			} catch (error) {
-				toast.error(error?.message || "Authentication check failed"); // Safe default
-				setAuthUser(null); // Fallback
+				console.error('Auth check error:', error);
+				setAuthUser(null);
 			} finally {
-				setLoading(false); // Always stop loading
+				setLoading(false);
 			}
 		};
 

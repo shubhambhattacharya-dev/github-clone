@@ -22,15 +22,15 @@ const LoginPage = () => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		if (isLogin) {
-			// Handle login logic
-			console.log("Login:", formData);
+			// Handle login logic - redirect to GitHub OAuth
+			handleLoginWithGithub();
 		} else {
-			// Handle signup logic
+			// Handle signup logic - redirect to GitHub OAuth
 			if (formData.password !== formData.confirmPassword) {
 				alert("Passwords don't match!");
 				return;
 			}
-			console.log("Signup:", formData);
+			handleLoginWithGithub();
 		}
 	};
 
