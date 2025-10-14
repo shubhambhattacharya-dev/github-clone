@@ -15,10 +15,8 @@ const TrendsPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!searchQuery.trim()) {
-      fetchTrendingRepos();
-    }
-  }, [timeRange, category, language, sortBy]);
+    fetchTrendingRepos();
+  }, [timeRange, category, language, sortBy, searchQuery]);
 
   const fetchTrendingRepos = async () => {
     setLoading(true);
@@ -40,7 +38,15 @@ const TrendsPage = () => {
       }
 
       // GitHub trending API (using a public service)
-      const response = await fetch(`https://api.github.com/search/repositories?q=${encodeURIComponent(query)}&sort=${sortBy}&order=desc&per_page=20`, {
+      let apiUrl;
+      if (sortBy === 'best') {
+        // For "Best Match", use relevance sorting and then sort by combined score
+        apiUrl = `https://api.github.com/search/repositories?q=${encodeURIComponent(query)}&sort=&order=desc&per_page=50`;
+      } else {
+        apiUrl = `https://api.github.com/search/repositories?q=${encodeURIComponent(query)}&sort=${sortBy}&order=desc&per_page=50`;
+      }
+
+      const response = await fetch(apiUrl, {
         headers: {
           'Accept': 'application/vnd.github.v3+json',
           'User-Agent': 'GitHub-Clone-App'
@@ -52,7 +58,19 @@ const TrendsPage = () => {
       }
 
       const data = await response.json();
-      setTrendingRepos(data.items || []);
+      let repos = data.items || [];
+
+      // Custom sorting for "Best Match" - prioritize highly forked repos with good engagement
+      if (sortBy === 'best') {
+        repos = repos.sort((a, b) => {
+          const scoreA = (a.forks_count || 0) * 2 + (a.stargazers_count || 0) + (a.watchers_count || 0);
+          const scoreB = (b.forks_count || 0) * 2 + (b.stargazers_count || 0) + (b.watchers_count || 0);
+          return scoreB - scoreA;
+        });
+      }
+
+      // Limit to 20 results after sorting
+      setTrendingRepos(repos.slice(0, 20));
     } catch (error) {
       console.error('Error fetching trending repos:', error);
       toast.error('Failed to load trending repositories');
@@ -318,7 +336,8 @@ const TrendsPage = () => {
               {[
                 { key: "popular", sort: "stars", label: "Popular" },
                 { key: "liked", sort: "stars", label: "Most Liked" },
-                { key: "forks", sort: "forks", label: "Most Forks" }
+                { key: "forks", sort: "forks", label: "Most Forks" },
+                { key: "best", sort: "best", label: "Best Match" }
               ].map(sort => (
                 <button
                   key={sort.key}
