@@ -11,22 +11,29 @@ const TrendsPage = () => {
   const [category, setCategory] = useState("dsa");
   const [language, setLanguage] = useState("all");
   const [sortBy, setSortBy] = useState("stars");
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchTrendingRepos();
+    if (!searchQuery.trim()) {
+      fetchTrendingRepos();
+    }
   }, [timeRange, category, language, sortBy]);
 
   const fetchTrendingRepos = async () => {
     setLoading(true);
     try {
       let query = 'stars:>1';
-      if (category === 'dsa') {
-        query += ' algorithms OR "data structures" OR dsa';
-      } else if (category === 'webdev') {
-        query += ' javascript OR react OR vue OR angular';
-      } else if (category === 'ai') {
-        query += ' "machine learning" OR tensorflow OR pytorch OR ai';
+      if (searchQuery.trim()) {
+        query += ` ${searchQuery}`;
+      } else {
+        if (category === 'dsa') {
+          query += ' algorithms OR "data structures" OR dsa';
+        } else if (category === 'webdev') {
+          query += ' javascript OR react OR vue OR angular';
+        } else if (category === 'ai') {
+          query += ' "machine learning" OR tensorflow OR pytorch OR ai';
+        }
       }
       if (language !== 'all') {
         query += ` language:${language}`;
@@ -222,6 +229,24 @@ const TrendsPage = () => {
       <div className="bg-glass max-w-4xl mx-auto rounded-md p-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold mb-4">Trending Repositories</h1>
+
+          <div className="mb-4">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Search repositories..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 px-4 py-2 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                onClick={() => fetchTrendingRepos()}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Search
+              </button>
+            </div>
+          </div>
 
           <div className="flex flex-col gap-4 mb-4">
             <div className="flex gap-2">
